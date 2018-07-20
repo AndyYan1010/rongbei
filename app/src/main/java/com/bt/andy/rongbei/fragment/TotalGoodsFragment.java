@@ -390,7 +390,7 @@ public class TotalGoodsFragment extends Fragment implements View.OnClickListener
                     goodsInfo.setSpeci(info.getFmodel());
                     goodsInfo.setPlannum("" + info.getFjhqty());
                     goodsInfo.setAccept("" + info.getFszqty());
-                    goodsInfo.setReal("0");
+                    goodsInfo.setReal("" + info.getFjhqty());
                     goodsInfo.setFicmobillno(info.getFicmobillno());
                     goodsInfo.setFgongxuno(info.getFgongxuno());
                     mGoodsData.add(goodsInfo);
