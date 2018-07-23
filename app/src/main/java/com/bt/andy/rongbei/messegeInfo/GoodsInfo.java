@@ -36,6 +36,22 @@ public class GoodsInfo {
     private String fgongxuno;
     private String ficmobillno;
 
+    private String FJYName;
+    private String FSFSDGX;
+    private String FSFMDGX;
+    private String FSFDDGX;
+    private String FGXName1;
+    private String FGXName2;
+    private String FGXName3;
+    private String FGXName4;
+    /**
+     * fid : 1
+     * fentryid : 1
+     */
+
+    private String fid;
+    private String fentryid;
+
     public String getGoodsid() {
         return goodsid;
     }
@@ -106,5 +122,85 @@ public class GoodsInfo {
 
     public void setFicmobillno(String ficmobillno) {
         this.ficmobillno = ficmobillno;
+    }
+
+    public String getFJYName() {
+        return FJYName;
+    }
+
+    public void setFJYName(String FJYName) {
+        this.FJYName = FJYName;
+    }
+
+    public String getFSFSDGX() {
+        return FSFSDGX;
+    }
+
+    public void setFSFSDGX(String FSFSDGX) {
+        this.FSFSDGX = FSFSDGX;
+    }
+
+    public String getFSFMDGX() {
+        return FSFMDGX;
+    }
+
+    public void setFSFMDGX(String FSFMDGX) {
+        this.FSFMDGX = FSFMDGX;
+    }
+
+    public String getFSFDDGX() {
+        return FSFDDGX;
+    }
+
+    public void setFSFDDGX(String FSFDDGX) {
+        this.FSFDDGX = FSFDDGX;
+    }
+
+    public String getFGXName1() {
+        return FGXName1;
+    }
+
+    public void setFGXName1(String FGXName1) {
+        this.FGXName1 = FGXName1;
+    }
+
+    public String getFGXName2() {
+        return FGXName2;
+    }
+
+    public void setFGXName2(String FGXName2) {
+        this.FGXName2 = FGXName2;
+    }
+
+    public String getFGXName3() {
+        return FGXName3;
+    }
+
+    public void setFGXName3(String FGXName3) {
+        this.FGXName3 = FGXName3;
+    }
+
+    public String getFGXName4() {
+        return FGXName4;
+    }
+
+    public void setFGXName4(String FGXName4) {
+        this.FGXName4 = FGXName4;
+    }
+
+    public String getFid() {
+        return fid;
+    }
+
+    public void setFid(String fid) {
+        this.fid = fid;
+    }
+
+    public String getFentryid() {
+        return fentryid;
+    }
+
+    public void setFentryid(String fentryid) {
+        this.fentryid = fentryid;
     }
 }

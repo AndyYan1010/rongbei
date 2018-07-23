@@ -186,8 +186,7 @@ public class TotalGoodsFragment extends Fragment implements View.OnClickListener
                 break;
             case R.id.bt_submit:
                 //TODO:提交总表到服务器
-                // {"passid": "8182","items":[{"fdate":"2018-07-18","fscrwd_billno":"WORK000006","fqty":2,"fbiller":"morningstar","fopersn":"02"}]}
-
+                //{"passid": "8182","items":[{"fdate":"2018-07-23","fid":"1010","fentryid":"14","fqty":2,"fbiller":"morningstar","fjyname":"免检","fsfsdgx":"否","fsfmdgx":"是","fsfddgx":"是"}]}
                 String partArg = "{\"passid\": \"8182\",\"items\":[";
                 Date date = new Date();
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -200,10 +199,16 @@ public class TotalGoodsFragment extends Fragment implements View.OnClickListener
                     if ("".equals(real) || "请点击修改".equals(real)) {
                         real = "0";
                     }
+                    s = "{\"fdate\":\"" + dateNowStr + "\",\"fid\":\"" + goodsInfo.getFid() + "\",\"fqty\":" + real + ",\"fbiller\":\"" + MyAppliaction.uerName + "\",\"fentryid\":\"" + goodsInfo.getFentryid() +
+                            "\",\"fjyname\":\"" + goodsInfo.getFJYName() + "\",\"fsfsdgx\":\"" + goodsInfo.getFSFSDGX() + "\",\"fsfmdgx\":\"" + goodsInfo.getFSFMDGX() + "\",\"fsfddgx\":\"" + goodsInfo.getFSFDDGX();
+
+                    //                    String tick = "{\"fdate\":\"" + dateNowStr + "\",\"fscrwd_billno\":\"" + goodsInfo.getFicmobillno() + "\",\"fqty\":" + real + ",\"fbiller\":\"" + MyAppliaction.uerName + "\",\"fopersn\":\"" + goodsInfo.getFgongxuno() +
+                    //                            "\",\"FJYName\":\"" + goodsInfo.getFJYName() + "\",\"FSFSDGX\":\"" + goodsInfo.getFSFSDGX() + "\",\"FSFMDGX\":\"" + goodsInfo.getFSFMDGX() + "\",\"FSFDDGX\":\"" + goodsInfo.getFSFDDGX() +
+                    //                            "\",\"FGXName1\":\"" + goodsInfo.getFGXName1() + "\",\"FGXName2\":\"" + goodsInfo.getFGXName2() + "\",\"FGXName3\":\"" + goodsInfo.getFGXName3() + "\",\"FGXName4\":\"" + goodsInfo.getFGXName4();
                     if (i == mGoodsData.size() - 1) {
-                        s = "{\"fdate\":\"" + dateNowStr + "\",\"fscrwd_billno\":\"" + goodsInfo.getFicmobillno() + "\",\"fqty\":" + real + ",\"fbiller\":\"" + MyAppliaction.uerName + "\",\"fopersn\":\"" + goodsInfo.getFgongxuno() + "\"}]}";
+                        s = s + "\"}]}";
                     } else {
-                        s = "{\"fdate\":\"" + dateNowStr + "\",\"fscrwd_billno\":\"" + goodsInfo.getFicmobillno() + "\",\"fqty\":" + real + ",\"fbiller\":\"" + MyAppliaction.uerName + "\",\"fopersn\":\"" + goodsInfo.getFgongxuno() + "\"},";
+                        s = s + "\"},";
                     }
                     partArg = partArg + s;
                 }
@@ -384,15 +389,30 @@ public class TotalGoodsFragment extends Fragment implements View.OnClickListener
                 for (int i = 0; i < jsonArray.length(); i++) {
                     LiuZhuanInfo info = gson.fromJson(jsonArray.get(i).toString(), LiuZhuanInfo.class);
                     GoodsInfo goodsInfo = new GoodsInfo();
-                    goodsInfo.setGoodsid(info.getFlzkno());
-                    goodsInfo.setPicid(info.getFnumber());
-                    goodsInfo.setName(info.getFname());
-                    goodsInfo.setSpeci(info.getFmodel());
-                    goodsInfo.setPlannum("" + info.getFjhqty());
-                    goodsInfo.setAccept("" + info.getFszqty());
-                    goodsInfo.setReal("" + info.getFjhqty());
-                    goodsInfo.setFicmobillno(info.getFicmobillno());
-                    goodsInfo.setFgongxuno(info.getFgongxuno());
+                    goodsInfo.setFid("" + info.getFID());
+                    goodsInfo.setFentryid("" + info.getFEntryID());
+                    goodsInfo.setGoodsid(info.getFBillNo());
+                    goodsInfo.setPicid(info.getFNumber());
+                    goodsInfo.setName(info.getFName());
+                    goodsInfo.setSpeci(info.getFModel());
+                    goodsInfo.setPlannum("" + info.getFAuxQty());
+                    goodsInfo.setAccept("" + info.getFAuxQtyRecive());
+                    double v = info.getFAuxQty() - info.getFAuxQtyRecive();
+                    if (v <= 0) {
+                        goodsInfo.setReal("0");
+                    } else {
+                        goodsInfo.setReal("" + v);
+                    }
+                    //                    goodsInfo.setFicmobillno(info.getFicmobillno());
+                    //                    goodsInfo.setFgongxuno(info.getFgongxuno());
+                    goodsInfo.setFJYName(info.getFJYName());
+                    goodsInfo.setFSFSDGX(info.getFSFSDGX());
+                    goodsInfo.setFSFMDGX(info.getFSFMDGX());
+                    goodsInfo.setFSFDDGX(info.getFSFDDGX());
+                    //                    goodsInfo.setFGXName1(info.getFGXName1());
+                    //                    goodsInfo.setFGXName2(info.getFGXName2());
+                    //                    goodsInfo.setFGXName3(info.getFGXName3());
+                    //                    goodsInfo.setFGXName4(info.getFGXName4());
                     mGoodsData.add(goodsInfo);
                 }
                 if (mGoodsData.size() > 1) {
