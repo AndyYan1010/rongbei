@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.bt.andy.rongbei.R;
 import com.bt.andy.rongbei.messegeInfo.GoodsInfo;
+import com.bt.andy.rongbei.messegeInfo.WorkProceInfo;
 import com.bt.andy.rongbei.utils.ToastUtils;
 
 import java.util.List;
@@ -27,14 +28,18 @@ import java.util.List;
  */
 
 public class TransferAdapter extends RecyclerView.Adapter<TransferAdapter.ViewHolder> {
-    private Context         mContext;
-    private List<String>    mList;
-    private List<GoodsInfo> mGoodsList;
+    private Context             mContext;
+    private List<String>        mList;
+    private List<GoodsInfo>     mGoodsList;
+    private List<WorkProceInfo> mListProce;
+    private String              mWorkProid;
 
-    public TransferAdapter(Context context, List list, List<GoodsInfo> goodsist) {
+    public TransferAdapter(Context context, List list, List<GoodsInfo> goodsist, List<WorkProceInfo> proce, String workProid) {
         this.mContext = context;
         this.mList = list;
         this.mGoodsList = goodsist;
+        this.mListProce = proce;
+        this.mWorkProid = workProid;
     }
 
     @Override
@@ -61,25 +66,25 @@ public class TransferAdapter extends RecyclerView.Adapter<TransferAdapter.ViewHo
         holder.tv_name.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-                //                ToastUtils.showToast(mContext, "" + position);
                 if (position <= 6 || position % 7 != 6) {
                     return;
                 }
                 String sNum = mList.get(position - 2);
                 double num = Double.parseDouble(sNum);
                 String sHDone = mList.get(position - 1);
-                double hDone = Double.parseDouble(sHDone);
-                if (num - hDone > 0) {
-                    //弹出一个Dialog，修改数据
-                    showDialogToChange(holder.tv_name, num, hDone, position);
-                } else {
-                    ToastUtils.showToast(mContext, "您提交数已满足计划数量，无需再次提交");
-                }
+                double rec = Double.parseDouble(sHDone);
+                //弹出一个Dialog，修改数据
+                showDialogToChange(holder.tv_name, num, rec, position);
+                //                if (num - hDone > 0) {
+                //TODO
+                //                } else {
+                //                    ToastUtils.showToast(mContext, "您提交数已满足计划数量，无需再次提交");
+                //                }
             }
         });
     }
 
-    private void showDialogToChange(final TextView tv_name, final double num, final double hDone, final int position) {
+    private void showDialogToChange(final TextView tv_name, final double num, final double rec, final int position) {
         final EditText et = new EditText(mContext);
         et.setInputType(InputType.TYPE_CLASS_NUMBER);
         new AlertDialog.Builder(mContext).setView(et).setTitle("填入")
@@ -92,10 +97,18 @@ public class TransferAdapter extends RecyclerView.Adapter<TransferAdapter.ViewHo
                         if (!content.equals("")) {
                             wrNum = Integer.parseInt(content);
                         }
-                        if (wrNum > (num - hDone)) {
-                            ToastUtils.showToast(mContext, "实做数不能大于计划数");
-                            return;
+                        if (mListProce.get(1).equals(mWorkProid)) {
+                            if (wrNum > num) {
+                                ToastUtils.showToast(mContext, "实做数不能大于计划数");
+                                return;
+                            }
+                        } else {
+                            if (wrNum > rec) {
+                                ToastUtils.showToast(mContext, "实做数不能大于接收数");
+                                return;
+                            }
                         }
+
                         tv_name.setText(content);
                         mList.set(position, content);
                         GoodsInfo goodsInfo = mGoodsList.get(position / 7);

@@ -28,6 +28,7 @@ import com.bt.andy.rongbei.adapter.SelectWorkProceAdapter;
 import com.bt.andy.rongbei.adapter.TransferAdapter;
 import com.bt.andy.rongbei.messegeInfo.GoodsInfo;
 import com.bt.andy.rongbei.messegeInfo.LiuZhuanInfo;
+import com.bt.andy.rongbei.messegeInfo.LoginInfo;
 import com.bt.andy.rongbei.messegeInfo.WorkProceInfo;
 import com.bt.andy.rongbei.utils.Consts;
 import com.bt.andy.rongbei.utils.ProgressDialogUtil;
@@ -136,7 +137,7 @@ public class TotalGoodsFragment extends Fragment implements View.OnClickListener
             }
         });
         rec_detail.setLayoutManager(gridLayoutManager);
-        adapter = new TransferAdapter(getContext(), mRecData, mGoodsData);
+        adapter = new TransferAdapter(getContext(), mRecData, mGoodsData,mListProce,workProid);
         rec_detail.setAdapter(adapter);
         img_scan0.setOnClickListener(this);
         tv_sure0.setOnClickListener(this);
@@ -202,9 +203,6 @@ public class TotalGoodsFragment extends Fragment implements View.OnClickListener
                     s = "{\"fdate\":\"" + dateNowStr + "\",\"fid\":\"" + goodsInfo.getFid() + "\",\"fqty\":" + real + ",\"fbiller\":\"" + MyAppliaction.uerName + "\",\"fentryid\":\"" + goodsInfo.getFentryid() +
                             "\",\"fjyname\":\"" + goodsInfo.getFJYName() + "\",\"fsfsdgx\":\"" + goodsInfo.getFSFSDGX() + "\",\"fsfmdgx\":\"" + goodsInfo.getFSFMDGX() + "\",\"fsfddgx\":\"" + goodsInfo.getFSFDDGX();
 
-                    //                    String tick = "{\"fdate\":\"" + dateNowStr + "\",\"fscrwd_billno\":\"" + goodsInfo.getFicmobillno() + "\",\"fqty\":" + real + ",\"fbiller\":\"" + MyAppliaction.uerName + "\",\"fopersn\":\"" + goodsInfo.getFgongxuno() +
-                    //                            "\",\"FJYName\":\"" + goodsInfo.getFJYName() + "\",\"FSFSDGX\":\"" + goodsInfo.getFSFSDGX() + "\",\"FSFMDGX\":\"" + goodsInfo.getFSFMDGX() + "\",\"FSFDDGX\":\"" + goodsInfo.getFSFDDGX() +
-                    //                            "\",\"FGXName1\":\"" + goodsInfo.getFGXName1() + "\",\"FGXName2\":\"" + goodsInfo.getFGXName2() + "\",\"FGXName3\":\"" + goodsInfo.getFGXName3() + "\",\"FGXName4\":\"" + goodsInfo.getFGXName4();
                     if (i == mGoodsData.size() - 1) {
                         s = s + "\"}]}";
                     } else {
@@ -395,24 +393,18 @@ public class TotalGoodsFragment extends Fragment implements View.OnClickListener
                     goodsInfo.setPicid(info.getFNumber());
                     goodsInfo.setName(info.getFName());
                     goodsInfo.setSpeci(info.getFModel());
-                    goodsInfo.setPlannum("" + info.getFAuxQty());
-                    goodsInfo.setAccept("" + info.getFAuxQtyRecive());
+                    goodsInfo.setPlannum("" + info.getFAuxQty());//实作数
+                    goodsInfo.setAccept("" + info.getFAuxQtyRecive());//接收数
                     double v = info.getFAuxQty() - info.getFAuxQtyRecive();
                     if (v <= 0) {
                         goodsInfo.setReal("0");
                     } else {
                         goodsInfo.setReal("" + v);
                     }
-                    //                    goodsInfo.setFicmobillno(info.getFicmobillno());
-                    //                    goodsInfo.setFgongxuno(info.getFgongxuno());
                     goodsInfo.setFJYName(info.getFJYName());
                     goodsInfo.setFSFSDGX(info.getFSFSDGX());
                     goodsInfo.setFSFMDGX(info.getFSFMDGX());
                     goodsInfo.setFSFDDGX(info.getFSFDDGX());
-                    //                    goodsInfo.setFGXName1(info.getFGXName1());
-                    //                    goodsInfo.setFGXName2(info.getFGXName2());
-                    //                    goodsInfo.setFGXName3(info.getFGXName3());
-                    //                    goodsInfo.setFGXName4(info.getFGXName4());
                     mGoodsData.add(goodsInfo);
                 }
                 if (mGoodsData.size() > 1) {
@@ -473,6 +465,19 @@ public class TotalGoodsFragment extends Fragment implements View.OnClickListener
                 mGoodsData.clear();
                 mBt_submit.setVisibility(View.GONE);
                 adapter.notifyDataSetChanged();
+            } else {
+                JSONArray jsonArray;
+                String message = "";
+                try {
+                    jsonArray = new JSONArray(s);
+                    Gson gson = new Gson();
+                    LoginInfo info = gson.fromJson(jsonArray.get(0).toString(), LoginInfo.class);
+                    message = info.getMessage();
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                ToastUtils.showToast(getContext(), "提交失败,错误信息：" + message);
             }
         }
     }
