@@ -51,6 +51,11 @@ public class LiuZhuanInfo {
     private String FGXName2;
     private String FGXName3;
     private String FGXName4;
+    /**
+     * FAuxQtyjh : 10.0
+     */
+
+    private double FAuxQtyjh;
 
     public int getNm() {
         return nm;
@@ -202,6 +207,14 @@ public class LiuZhuanInfo {
 
     public void setFGXName4(String FGXName4) {
         this.FGXName4 = FGXName4;
+    }
+
+    public double getFAuxQtyjh() {
+        return FAuxQtyjh;
+    }
+
+    public void setFAuxQtyjh(double FAuxQtyjh) {
+        this.FAuxQtyjh = FAuxQtyjh;
     }
 
     ////    private String flzkno;//流转卡卡号

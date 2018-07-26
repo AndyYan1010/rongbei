@@ -66,25 +66,22 @@ public class TransferAdapter extends RecyclerView.Adapter<TransferAdapter.ViewHo
         holder.tv_name.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-                if (position <= 6 || position % 7 != 6) {
+                if (position <= 7 || position % 8 != 7) {
                     return;
                 }
-                String sNum = mList.get(position - 2);
+                String sNum = mList.get(position - 3);//总计划数
+                String surplusNum = mList.get(position - 2);//剩余计划数
                 double num = Double.parseDouble(sNum);
-                String sHDone = mList.get(position - 1);
+                double levnum = Double.parseDouble(surplusNum);
+                String sHDone = mList.get(position - 1);//接收数
                 double rec = Double.parseDouble(sHDone);
                 //弹出一个Dialog，修改数据
-                showDialogToChange(holder.tv_name, num, rec, position);
-                //                if (num - hDone > 0) {
-                //TODO
-                //                } else {
-                //                    ToastUtils.showToast(mContext, "您提交数已满足计划数量，无需再次提交");
-                //                }
+                showDialogToChange(holder.tv_name, num, levnum, rec, position);
             }
         });
     }
 
-    private void showDialogToChange(final TextView tv_name, final double num, final double rec, final int position) {
+    private void showDialogToChange(final TextView tv_name, final double num, final double levnum, final double rec, final int position) {
         final EditText et = new EditText(mContext);
         et.setInputType(InputType.TYPE_CLASS_NUMBER);
         new AlertDialog.Builder(mContext).setView(et).setTitle("填入")
@@ -97,21 +94,27 @@ public class TransferAdapter extends RecyclerView.Adapter<TransferAdapter.ViewHo
                         if (!content.equals("")) {
                             wrNum = Integer.parseInt(content);
                         }
-                        if (mListProce.get(1).equals(mWorkProid)) {
-                            if (wrNum > num) {
-                                ToastUtils.showToast(mContext, "实做数不能大于计划数");
-                                return;
-                            }
-                        } else {
-                            if (wrNum > rec) {
-                                ToastUtils.showToast(mContext, "实做数不能大于接收数");
-                                return;
-                            }
+
+                        if (wrNum > rec) {
+                            ToastUtils.showToast(mContext, "实做数不能大于接收数");
+                            return;
                         }
+
+                        //                        if (mListProce.get(1).getFName().equals(mWorkProid)) {
+                        //                            if (wrNum > num) {
+                        //                                ToastUtils.showToast(mContext, "实做数不能大于计划数");
+                        //                                return;
+                        //                            }
+                        //                        } else {
+                        //                            if (wrNum > rec) {
+                        //                                ToastUtils.showToast(mContext, "实做数不能大于接收数");
+                        //                                return;
+                        //                            }
+                        //                        }
 
                         tv_name.setText(content);
                         mList.set(position, content);
-                        GoodsInfo goodsInfo = mGoodsList.get(position / 7);
+                        GoodsInfo goodsInfo = mGoodsList.get(position / 8);
                         goodsInfo.setReal(content);
                     }
                 }).setNegativeButton("取消", null).show();

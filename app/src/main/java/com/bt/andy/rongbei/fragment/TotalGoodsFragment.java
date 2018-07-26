@@ -125,7 +125,7 @@ public class TotalGoodsFragment extends Fragment implements View.OnClickListener
 
         mRecData = new ArrayList();
         mGoodsData = new ArrayList();
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 7);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 8);
         gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
@@ -137,7 +137,7 @@ public class TotalGoodsFragment extends Fragment implements View.OnClickListener
             }
         });
         rec_detail.setLayoutManager(gridLayoutManager);
-        adapter = new TransferAdapter(getContext(), mRecData, mGoodsData,mListProce,workProid);
+        adapter = new TransferAdapter(getContext(), mRecData, mGoodsData, mListProce, workProid);
         rec_detail.setAdapter(adapter);
         img_scan0.setOnClickListener(this);
         tv_sure0.setOnClickListener(this);
@@ -379,8 +379,10 @@ public class TotalGoodsFragment extends Fragment implements View.OnClickListener
                 goodsInfo0.setPicid("图号");
                 goodsInfo0.setName("零件名称");
                 goodsInfo0.setSpeci("规格");
-                goodsInfo0.setPlannum("计划数");
+                goodsInfo0.setFAuxQtyjh("总计划数");
+                goodsInfo0.setPlannum("剩余计划数");
                 goodsInfo0.setAccept("接收数");
+                //                goodsInfo0.setAccept("待提交数");
                 goodsInfo0.setReal("实做数");
                 mGoodsData.add(goodsInfo0);
                 jsonArray = new JSONArray(s);
@@ -393,13 +395,17 @@ public class TotalGoodsFragment extends Fragment implements View.OnClickListener
                     goodsInfo.setPicid(info.getFNumber());
                     goodsInfo.setName(info.getFName());
                     goodsInfo.setSpeci(info.getFModel());
-                    goodsInfo.setPlannum("" + info.getFAuxQty());//实作数
-                    goodsInfo.setAccept("" + info.getFAuxQtyRecive());//接收数
-                    double v = info.getFAuxQty() - info.getFAuxQtyRecive();
-                    if (v <= 0) {
-                        goodsInfo.setReal("0");
+                    double fAuxQtyjh = info.getFAuxQtyjh();
+                    double fAuxQty = info.getFAuxQty();//剩余计划数
+                    goodsInfo.setFAuxQtyjh("" + fAuxQtyjh);//总计划数
+                    goodsInfo.setPlannum("" + fAuxQty);//剩余计划数
+                    // double hDone = info.getFAuxQtyjh() - fAuxQty;//已提交
+                    if (mListProce.get(1).getFName().equals(workProid)) {
+                        goodsInfo.setAccept("" + info.getFAuxQtyRecive());//接收数
+                        goodsInfo.setReal("" + info.getFAuxQtyRecive());//应实作数
                     } else {
-                        goodsInfo.setReal("" + v);
+                        goodsInfo.setAccept("" + (info.getFAuxQtyRecive() - (fAuxQtyjh - fAuxQty)));//接收数
+                        goodsInfo.setReal("" + (info.getFAuxQtyRecive() - (fAuxQtyjh - fAuxQty)));//应实作数
                     }
                     goodsInfo.setFJYName(info.getFJYName());
                     goodsInfo.setFSFSDGX(info.getFSFSDGX());
@@ -413,6 +419,7 @@ public class TotalGoodsFragment extends Fragment implements View.OnClickListener
                         String picid = goodsInfo1.getPicid();
                         String name = goodsInfo1.getName();
                         String speci = goodsInfo1.getSpeci();
+                        String oriPlan = goodsInfo1.getFAuxQtyjh();
                         String plannum = goodsInfo1.getPlannum();
                         String accept = goodsInfo1.getAccept();
                         String real = goodsInfo1.getReal();
@@ -420,6 +427,7 @@ public class TotalGoodsFragment extends Fragment implements View.OnClickListener
                         mRecData.add(picid);
                         mRecData.add(name);
                         mRecData.add(speci);
+                        mRecData.add(oriPlan);
                         mRecData.add(plannum);
                         mRecData.add(accept);
                         mRecData.add(real);

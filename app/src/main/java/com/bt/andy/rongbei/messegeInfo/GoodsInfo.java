@@ -51,6 +51,11 @@ public class GoodsInfo {
 
     private String fid;
     private String fentryid;
+    /**
+     * FAuxQtyjh : 10.00
+     */
+
+    private String FAuxQtyjh;
 
     public String getGoodsid() {
         return goodsid;
@@ -202,5 +207,13 @@ public class GoodsInfo {
 
     public void setFentryid(String fentryid) {
         this.fentryid = fentryid;
+    }
+
+    public String getFAuxQtyjh() {
+        return FAuxQtyjh;
+    }
+
+    public void setFAuxQtyjh(String FAuxQtyjh) {
+        this.FAuxQtyjh = FAuxQtyjh;
     }
 }
