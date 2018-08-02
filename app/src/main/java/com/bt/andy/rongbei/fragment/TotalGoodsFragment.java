@@ -231,11 +231,12 @@ public class TotalGoodsFragment extends Fragment implements View.OnClickListener
         }
         if (local == 0) {
             ToastUtils.showToast(getContext(), "未在本项目中查找到该流转卡号");
+        }else {
+            local = local + 7;
+            mRecData.set(local, "请点击修改");
+            adapter.notifyDataSetChanged();
+            rec_detail.scrollToPosition(local + 7);
         }
-        local = local + 7;
-        mRecData.set(local, "请点击修改");
-        adapter.notifyDataSetChanged();
-        rec_detail.scrollToPosition(local + 7);
     }
 
     private void scanningCode(int kind) {
