@@ -231,7 +231,7 @@ public class TotalGoodsFragment extends Fragment implements View.OnClickListener
         }
         if (local == 0) {
             ToastUtils.showToast(getContext(), "未在本项目中查找到该流转卡号");
-        }else {
+        } else {
             local = local + 7;
             mRecData.set(local, "请点击修改");
             adapter.notifyDataSetChanged();
@@ -247,6 +247,7 @@ public class TotalGoodsFragment extends Fragment implements View.OnClickListener
             ActivityCompat.requestPermissions((Activity) getContext(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA},
                     MY_PERMISSIONS_REQUEST_CALL_PHONE2);
         } else {
+            // Intent intent = new Intent(getContext(), SaomiaoUIActivity.class);//这是一个自定义的扫描界面，扫描UI框放大了。
             Intent intent = new Intent(getContext(), CaptureActivity.class);
             if (kind == 0) {
                 startActivityForResult(intent, REQUEST_CODE0);

@@ -32,6 +32,7 @@
             </intent-filter>
         </activity>
         <activity android:name="com.bt.andy.rongbei.activity.meActivity.SettingActivity"/>
+        <activity android:name=".activity.SaomiaoUIActivity"/>
     </application>
 
 </manifest>
