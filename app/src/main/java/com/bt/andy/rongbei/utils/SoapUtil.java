@@ -18,7 +18,7 @@ public class SoapUtil {
      * @param mMap
      * @return
      */
-    public static String requestWebService(String methodName, Map<String, String> mMap) {
+    public static String requestWebService(String methodName, Map<String, Object> mMap) {
         try {
             // 命名空间
             String nameSpace = "http://tempuri.org/";

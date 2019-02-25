@@ -6,6 +6,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 
 import com.bt.andy.rongbei.BaseActivity;
@@ -16,6 +18,7 @@ import com.bt.andy.rongbei.messegeInfo.LoginInfo;
 import com.bt.andy.rongbei.utils.Consts;
 import com.bt.andy.rongbei.utils.ProgressDialogUtil;
 import com.bt.andy.rongbei.utils.SoapUtil;
+import com.bt.andy.rongbei.utils.SpUtils;
 import com.bt.andy.rongbei.utils.ToastUtils;
 import com.google.gson.Gson;
 
@@ -35,8 +38,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
     private EditText mEdit_num;
     private EditText mEdit_psd;
+    private CheckBox ck_remPas;//记住密码
     private Button   mBt_submit;
     private Dialog   dialog;
+    private boolean isRem = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,10 +55,28 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         mEdit_num = (EditText) findViewById(R.id.edit_num);
         mEdit_psd = (EditText) findViewById(R.id.edit_psd);
         mBt_submit = (Button) findViewById(R.id.bt_login);
+        ck_remPas = (CheckBox) findViewById(R.id.ck_remPas);
         dialog = new Dialog(this);
     }
 
     private void setData() {
+        Boolean isRemem = SpUtils.getBoolean(LoginActivity.this, "isRem", false);
+        if (isRemem) {
+            isRem = true;
+            ck_remPas.setChecked(true);
+            String name = SpUtils.getString(LoginActivity.this, "name");
+            String psd = SpUtils.getString(LoginActivity.this, "psd");
+            mEdit_num.setText(name);
+            mEdit_num.setSelection(name.length());
+            mEdit_psd.setText(psd);
+            mEdit_psd.setSelection(psd.length());
+        }
+        ck_remPas.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                isRem = b;
+            }
+        });
         mBt_submit.setOnClickListener(this);
     }
 
@@ -71,10 +94,20 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     ToastUtils.showToast(LoginActivity.this, "请输入密码");
                     return;
                 }
+                //是否记住账号密码
+                isNeedRem(number, pass);
                 new LoginTask(number, pass).execute();
                 //                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 //                startActivity(intent);
                 break;
+        }
+    }
+
+    private void isNeedRem(String name, String psd) {
+        SpUtils.putBoolean(LoginActivity.this, "isRem", isRem);
+        if (isRem) {
+            SpUtils.putString(LoginActivity.this, "name", name);
+            SpUtils.putString(LoginActivity.this, "psd", psd);
         }
     }
 
@@ -95,7 +128,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
         @Override
         protected String doInBackground(Void... voids) {
-            Map<String, String> map = new HashMap<>();
+            Map<String, Object> map = new HashMap<>();
             map.put("passid", "8182");
             map.put("fuserno", username);
             map.put("fuserpsw", password);
@@ -112,6 +145,12 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             String message = info.getMessage();
             if ("1".equals(status)) {
                 MyAppliaction.uerName = username;
+                MyAppliaction.userType = info.getFgx();
+                MyAppliaction.userID = Long.valueOf(info.getUserid());
+                MyAppliaction.fjianyanyuan = Long.valueOf(info.getJianyanid());
+                if (null == MyAppliaction.userType) {
+                    MyAppliaction.userType = "";
+                }
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(intent);
                 finish();

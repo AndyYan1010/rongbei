@@ -12,7 +12,9 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginTop="20dp"
-        android:text="取消"/>
+        android:background="@drawable/bg_round_blue_30"
+        android:text="取消"
+        android:textColor="@color/white"/>
 
     <FrameLayout
         android:id="@+id/fl_my_container"

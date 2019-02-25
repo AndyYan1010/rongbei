@@ -10,24 +10,27 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.bt.andy.rongbei.fragment.Check_F;
 import com.bt.andy.rongbei.fragment.Home_F;
 import com.bt.andy.rongbei.fragment.User_F;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
     private long        exitTime   = 0;//记录点击物理返回键的时间
     // 界面底部的菜单按钮
-    private ImageView[] bt_menu    = new ImageView[2];
+    private ImageView[] bt_menu    = new ImageView[3];
     // 界面底部的未选中菜单按钮资源
-    private int[]       select_off = {R.drawable.bt_menu_0_select, R.drawable.bt_menu_4_select};
+    private int[]       select_off = {R.drawable.bt_menu_0_select, R.drawable.bt_menu_1_select, R.drawable.bt_menu_4_select};
     // 界面底部的选中菜单按钮资源
-    private int[]       select_on  = {R.drawable.guide_home_on, R.drawable.guide_account_on};
+    private int[]       select_on  = {R.drawable.guide_home_on, R.drawable.stock_on, R.drawable.guide_account_on};
     // 界面底部的菜单按钮id
-    private int[]       bt_menu_id = {R.id.iv_menu_0, R.id.iv_menu_4};
+    private int[]       bt_menu_id = {R.id.iv_menu_0, R.id.iv_menu_1, R.id.iv_menu_4};
     //底部布局按钮的id
-    private int[]       linear_id  = {R.id.linear0, R.id.linear2};
+    private int[]       linear_id  = {R.id.linear0, R.id.linear1, R.id.linear2};
     private LinearLayout linear_home;
+    private LinearLayout linear_check;//检验
     private LinearLayout linear_mine;
     private Home_F       home_F;//主页
+    private Check_F      check_F;//检验
     private User_F       user_F;//个人中心
 
     @Override
@@ -41,6 +44,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     private void setView() {
         linear_home = findViewById(R.id.linear0);
+        linear_check = findViewById(R.id.linear1);
         linear_mine = findViewById(R.id.linear2);
     }
 
@@ -50,6 +54,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             bt_menu[i] = (ImageView) findViewById(bt_menu_id[i]);
         }
         linear_home.setOnClickListener(this);
+        linear_check.setOnClickListener(this);
         linear_mine.setOnClickListener(this);
         // 初始化默认显示的界面
         if (home_F == null) {
@@ -76,6 +81,21 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 } else {
                     if (home_F.isHidden()) {
                         showFragment(home_F);
+                    }
+                }
+                break;
+            case R.id.linear1:
+                // 检验
+                if (check_F == null) {
+                    check_F = new Check_F();
+                    // 判断当前界面是否隐藏，如果隐藏就进行添加显示，false表示显示，true表示当前界面隐藏
+                    if (!check_F.isHidden()) {
+                        addFragment(check_F);
+                        showFragment(check_F);
+                    }
+                } else {
+                    if (check_F.isHidden()) {
+                        showFragment(check_F);
                     }
                 }
                 break;

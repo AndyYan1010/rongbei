@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.bt.andy.rongbei.MyAppliaction;
 import com.bt.andy.rongbei.R;
+import com.bt.andy.rongbei.activity.SaomiaoUIActivity;
 import com.bt.andy.rongbei.adapter.SelectWorkProceAdapter;
 import com.bt.andy.rongbei.adapter.TransferAdapter;
 import com.bt.andy.rongbei.messegeInfo.GoodsInfo;
@@ -35,7 +36,6 @@ import com.bt.andy.rongbei.utils.ProgressDialogUtil;
 import com.bt.andy.rongbei.utils.SoapUtil;
 import com.bt.andy.rongbei.utils.ToastUtils;
 import com.google.gson.Gson;
-import com.uuzuche.lib_zxing.activity.CaptureActivity;
 import com.uuzuche.lib_zxing.activity.CodeUtils;
 
 import org.json.JSONArray;
@@ -247,8 +247,8 @@ public class TotalGoodsFragment extends Fragment implements View.OnClickListener
             ActivityCompat.requestPermissions((Activity) getContext(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA},
                     MY_PERMISSIONS_REQUEST_CALL_PHONE2);
         } else {
-            // Intent intent = new Intent(getContext(), SaomiaoUIActivity.class);//这是一个自定义的扫描界面，扫描UI框放大了。
-            Intent intent = new Intent(getContext(), CaptureActivity.class);
+            Intent intent = new Intent(getContext(), SaomiaoUIActivity.class);//这是一个自定义的扫描界面，扫描UI框放大了。
+            //            Intent intent = new Intent(getContext(), CaptureActivity.class);
             if (kind == 0) {
                 startActivityForResult(intent, REQUEST_CODE0);
             } else {
@@ -314,7 +314,7 @@ public class TotalGoodsFragment extends Fragment implements View.OnClickListener
 
         @Override
         protected String doInBackground(Void... voids) {
-            Map<String, String> map = new HashMap<>();
+            Map<String, Object> map = new HashMap<>();
             map.put("passid", "8182");
             map.put("fnumber", "");
             map.put("fname", "");
@@ -331,7 +331,13 @@ public class TotalGoodsFragment extends Fragment implements View.OnClickListener
                 jsonArray = new JSONArray(s);
                 for (int i = 0; i < jsonArray.length(); i++) {
                     WorkProceInfo info = gson.fromJson(jsonArray.get(i).toString(), WorkProceInfo.class);
-                    mListProce.add(info);
+                    if ("".equals(MyAppliaction.userType)) {
+                        mListProce.add(info);
+                    } else {
+                        if (info.getFName().equals(MyAppliaction.userType)) {
+                            mListProce.add(info);
+                        }
+                    }
                 }
                 workProceAdapter.notifyDataSetChanged();
             } catch (JSONException e) {
@@ -358,7 +364,7 @@ public class TotalGoodsFragment extends Fragment implements View.OnClickListener
 
         @Override
         protected String doInBackground(Void... voids) {
-            Map<String, String> map = new HashMap<>();
+            Map<String, Object> map = new HashMap<>();
             map.put("passid", "8182");
             map.put("forderbillno", forderbillno);
             map.put("fgongxu", fgongxu);
@@ -459,7 +465,7 @@ public class TotalGoodsFragment extends Fragment implements View.OnClickListener
 
         @Override
         protected String doInBackground(Void... voids) {
-            Map<String, String> map = new HashMap<>();
+            Map<String, Object> map = new HashMap<>();
             map.put("passid", "8182");
             map.put("FJSONMSG", FJSONMSG);
             return SoapUtil.requestWebService(Consts.submit, map);

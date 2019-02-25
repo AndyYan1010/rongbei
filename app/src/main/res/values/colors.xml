@@ -42,6 +42,15 @@
     <!-- 橙色 -->
     <color name="orange">#FFA500</color>
     <color name="red">#FF0000</color>
-
+    <!--绿色-->
+    <color name="green_100">#ff039e00</color>
+    <color name="green_25">#009966</color>
+    <color name="green">#009966</color>
+    <!--导航-->
+    <color name="title_black">#2A2A2A</color>
+    <!--深黑字体色 2A2A2A-->
+    <color name="word_black">#2A2A2A</color>
+    <!--文字灰色-->
+    <color name="word_gray">#7A7A7A</color>
 
 </resources>

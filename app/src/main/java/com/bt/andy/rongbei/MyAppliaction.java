@@ -21,8 +21,10 @@ public class MyAppliaction extends Application {
     public static boolean             isRelease    = false;
     public static ArrayList<Activity> listActivity = new ArrayList<Activity>();
     public static int                 flag         = -1;//判断是否被回收
-    public static String userID;//用户id
+    public static Long userID;//用户id
+    public static Long fjianyanyuan;//操作员id
     public static String uerName;//
+    public static String userType;//用户类别
 
     @Override
     public void onCreate() {

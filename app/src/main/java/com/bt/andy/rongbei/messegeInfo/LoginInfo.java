@@ -14,10 +14,16 @@ public class LoginInfo {
     /**
      * status : 1
      * message : 成功
+     * fgx :
+     * userid : 16401
+     * jianyanid : 280
      */
 
     private String status;
     private String message;
+    private String fgx;
+    private String userid;
+    private String jianyanid;
 
     public String getStatus() {
         return status;
@@ -33,5 +39,29 @@ public class LoginInfo {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getFgx() {
+        return fgx;
+    }
+
+    public void setFgx(String fgx) {
+        this.fgx = fgx;
+    }
+
+    public String getUserid() {
+        return userid;
+    }
+
+    public void setUserid(String userid) {
+        this.userid = userid;
+    }
+
+    public String getJianyanid() {
+        return jianyanid;
+    }
+
+    public void setJianyanid(String jianyanid) {
+        this.jianyanid = jianyanid;
     }
 }
