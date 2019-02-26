@@ -25,11 +25,13 @@ import android.widget.Toast;
 import com.bt.andy.rongbei.MyAppliaction;
 import com.bt.andy.rongbei.R;
 import com.bt.andy.rongbei.activity.SaomiaoUIActivity;
+import com.bt.andy.rongbei.adapter.SelectWorkPerAdapter;
 import com.bt.andy.rongbei.adapter.SelectWorkProceAdapter;
 import com.bt.andy.rongbei.adapter.TransferAdapter;
 import com.bt.andy.rongbei.messegeInfo.GoodsInfo;
 import com.bt.andy.rongbei.messegeInfo.LiuZhuanInfo;
 import com.bt.andy.rongbei.messegeInfo.LoginInfo;
+import com.bt.andy.rongbei.messegeInfo.WorkPerInfo;
 import com.bt.andy.rongbei.messegeInfo.WorkProceInfo;
 import com.bt.andy.rongbei.utils.Consts;
 import com.bt.andy.rongbei.utils.ProgressDialogUtil;
@@ -62,9 +64,13 @@ public class TotalGoodsFragment extends Fragment implements View.OnClickListener
     private TextView               mTv_title;
     private Dialog                 dialog;
     private Spinner                spi_cho;
+    private Spinner                spi_sce;
     private SelectWorkProceAdapter workProceAdapter;//工序选择适配器
+    private SelectWorkPerAdapter   workPerAdapter;//工序选择适配器
     private String workProid = "";//记录工序
+    private int    workPerId = 0;//记录操作员
     private List<WorkProceInfo> mListProce;//记录工序
+    private List<WorkPerInfo>   mListPer;//记录操作员
     private EditText            et_orderid, mEdit_goods_id;
     private TextView mTv_surema, tv_sure0;
     private ImageView img_scan0, mImg_scan;
@@ -88,6 +94,7 @@ public class TotalGoodsFragment extends Fragment implements View.OnClickListener
     private void initView() {
         mTv_title = mRootView.findViewById(R.id.tv_title);
         spi_cho = mRootView.findViewById(R.id.spi_cho);//工序下拉选择
+        spi_sce = mRootView.findViewById(R.id.spi_sce);//操作员下拉选择
         et_orderid = mRootView.findViewById(R.id.et_orderid);//输入项目id
         img_scan0 = mRootView.findViewById(R.id.img_scan0);//扫描
         mImg_scan = mRootView.findViewById(R.id.img_scan);//扫描
@@ -100,29 +107,11 @@ public class TotalGoodsFragment extends Fragment implements View.OnClickListener
 
     private void initData() {
         mTv_title.setText("工作汇报");
-        mListProce = new ArrayList<>();
-        WorkProceInfo workProinfo = new WorkProceInfo();
-        workProinfo.setFName("请选择工序");
-        mListProce.add(workProinfo);
-        workProceAdapter = new SelectWorkProceAdapter(getContext(), mListProce);
-        spi_cho.setAdapter(workProceAdapter);
-        spi_cho.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (i == 0) {
-                    ToastUtils.showToast(getContext(), "请选择工序");
-                } else {
-                    WorkProceInfo proceInfo = mListProce.get(i);
-                    workProid = proceInfo.getFName();//获得工序
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-
+        //初始化选择工序列表
+        initGXList();
+        //初始化职员列表
+        initZYList();
+        //初始化工序详情列表
         mRecData = new ArrayList();
         mGoodsData = new ArrayList();
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 8);
@@ -149,6 +138,63 @@ public class TotalGoodsFragment extends Fragment implements View.OnClickListener
         }
         //查询所有工序
         new WorkProTask("", "").execute();
+    }
+
+    private void initZYList() {
+        mListPer = new ArrayList<>();
+        WorkPerInfo workProinfo = new WorkPerInfo();
+        workProinfo.setFname("请选择操作员");
+        mListPer.add(workProinfo);
+        workPerAdapter = new SelectWorkPerAdapter(getContext(), mListPer);
+        spi_sce.setAdapter(workPerAdapter);
+        spi_sce.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if (i == 0) {
+                    ToastUtils.showToast(getContext(), "请选择操作员");
+                    workPerId = 0;
+                } else {
+                    WorkPerInfo proceInfo = mListPer.get(i);
+                    workPerId = proceInfo.getFitemid();//获得职员
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+    }
+
+    private void initGXList() {
+        mListProce = new ArrayList<>();
+        WorkProceInfo workProinfo = new WorkProceInfo();
+        workProinfo.setFName("请选择工序");
+        mListProce.add(workProinfo);
+        workProceAdapter = new SelectWorkProceAdapter(getContext(), mListProce);
+        spi_cho.setAdapter(workProceAdapter);
+        spi_cho.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if (i == 0) {
+                    ToastUtils.showToast(getContext(), "请选择工序");
+                } else {
+                    WorkProceInfo proceInfo = mListProce.get(i);
+                    workProid = proceInfo.getFName();//获得工序
+                    //查询同工序下的员工
+                    searchPerByGX(workProid);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+    }
+
+    private void searchPerByGX(String workProid) {
+        new WorkPerTask(workProid).execute();
     }
 
     @Override
@@ -201,8 +247,8 @@ public class TotalGoodsFragment extends Fragment implements View.OnClickListener
                         real = "0";
                     }
                     s = "{\"fdate\":\"" + dateNowStr + "\",\"fid\":\"" + goodsInfo.getFid() + "\",\"fqty\":" + real + ",\"fbiller\":\"" + MyAppliaction.uerName + "\",\"fentryid\":\"" + goodsInfo.getFentryid() +
-                            "\",\"fjyname\":\"" + goodsInfo.getFJYName() + "\",\"fsfsdgx\":\"" + goodsInfo.getFSFSDGX() + "\",\"fsfmdgx\":\"" + goodsInfo.getFSFMDGX() + "\",\"fsfddgx\":\"" + goodsInfo.getFSFDDGX();
-
+                            "\",\"fjyname\":\"" + goodsInfo.getFJYName() + "\",\"fsfsdgx\":\"" + goodsInfo.getFSFSDGX() + "\",\"fsfmdgx\":\"" + goodsInfo.getFSFMDGX() + "\",\"fsfddgx\":\"" + goodsInfo.getFSFDDGX()
+                            + "\"fbiller2\":" + workPerId;
                     if (i == mGoodsData.size() - 1) {
                         s = s + "\"}]}";
                     } else {
@@ -340,6 +386,49 @@ public class TotalGoodsFragment extends Fragment implements View.OnClickListener
                     }
                 }
                 workProceAdapter.notifyDataSetChanged();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    //查询工序职员
+    class WorkPerTask extends AsyncTask<Void, String, String> {
+        private String gx;
+
+        WorkPerTask(String gx) {
+            this.gx = gx;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            ProgressDialogUtil.startShow(getContext(), "正在查询职员");
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("passid", "8182");
+            map.put("fnumber", "");
+            map.put("fname", "");
+            map.put("fgongxu", gx);
+            return SoapUtil.requestWebService(Consts.JA_zhiyuan, map);
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            ProgressDialogUtil.hideDialog();
+            Gson gson = new Gson();
+            JSONArray jsonArray = null;
+            try {
+                jsonArray = new JSONArray(s);
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    WorkPerInfo info = gson.fromJson(jsonArray.get(i).toString(), WorkPerInfo.class);
+                    mListPer.add(info);
+                }
+                workPerAdapter.notifyDataSetChanged();
             } catch (JSONException e) {
                 e.printStackTrace();
             }

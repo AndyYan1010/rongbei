@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.bt.andy.rongbei.fragment.Check_F;
 import com.bt.andy.rongbei.fragment.Home_F;
 import com.bt.andy.rongbei.fragment.User_F;
+import com.bt.andy.rongbei.utils.ToastUtils;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
     private long        exitTime   = 0;//记录点击物理返回键的时间
@@ -85,6 +86,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 }
                 break;
             case R.id.linear1:
+                if (!"".equals(MyAppliaction.userType) || !"检测".equals(MyAppliaction.userType)) {
+                    ToastUtils.showToast(this, "您没有检测权限");
+                    return;
+                }
                 // 检验
                 if (check_F == null) {
                     check_F = new Check_F();

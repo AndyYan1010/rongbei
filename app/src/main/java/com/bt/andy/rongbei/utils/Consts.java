@@ -8,6 +8,7 @@ public class Consts {
     public static String gongxu                  = "JA_gongxu";
     public static String JA_gongxujianyan        = "JA_gongxujianyan";
     public static String JA_gongxujianyan_insert = "JA_gongxujianyan_insert";
+    public static String JA_zhiyuan              = "JA_zhiyuan";
     //查询工序流转卡卡号
     public static String gongxuNo                = "JA_gongxuliuzhuanka";
     //提交接口
