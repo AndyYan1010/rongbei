@@ -30,7 +30,7 @@ public class RecyCheckAdapter extends BaseQuickAdapter<CheckInfo, BaseViewHolder
     }
 
     @Override
-    protected void convert(BaseViewHolder helper, final CheckInfo item) {
+    protected void convert(final BaseViewHolder helper, final CheckInfo item) {
         helper.setText(R.id.tv_date, "--");
         helper.setText(R.id.tv_fno, item.getFBillNo());
         helper.setText(R.id.tv_tnum, item.getFNumber());
@@ -39,6 +39,9 @@ public class RecyCheckAdapter extends BaseQuickAdapter<CheckInfo, BaseViewHolder
         helper.setText(R.id.tv_fgx, item.getFGXName());
         helper.setText(R.id.tv_checkNum, "" + item.getFAuxQtyFinish());
         helper.setText(R.id.tv_fnumber, "" + item.getFHGQty());
+        //添加子控件的点击事件
+        helper.addOnClickListener(R.id.line_write).addOnClickListener(R.id.tv_sure);
+
         final EditText et_note = helper.getView(R.id.et_note);
         et_note.addTextChangedListener(new TextWatcher() {
             @Override

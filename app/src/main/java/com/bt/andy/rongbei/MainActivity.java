@@ -86,7 +86,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 }
                 break;
             case R.id.linear1:
-                if (!"".equals(MyAppliaction.userType) || !"检测".equals(MyAppliaction.userType)) {
+                if (!"".equals(MyAppliaction.userType) && !MyAppliaction.userType.contains("检测")) {
                     ToastUtils.showToast(this, "您没有检测权限");
                     return;
                 }

@@ -108,7 +108,7 @@ public class CheckInfo {
         this.FHGQty = FHGQty;
     }
 
-    public Long getFInterID() {
+    public long getFInterID() {
         return FInterID;
     }
 

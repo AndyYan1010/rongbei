@@ -246,9 +246,8 @@ public class TotalGoodsFragment extends Fragment implements View.OnClickListener
                     if ("".equals(real) || "请点击修改".equals(real)) {
                         real = "0";
                     }
-                    s = "{\"fdate\":\"" + dateNowStr + "\",\"fid\":\"" + goodsInfo.getFid() + "\",\"fqty\":" + real + ",\"fbiller\":\"" + MyAppliaction.uerName + "\",\"fentryid\":\"" + goodsInfo.getFentryid() +
-                            "\",\"fjyname\":\"" + goodsInfo.getFJYName() + "\",\"fsfsdgx\":\"" + goodsInfo.getFSFSDGX() + "\",\"fsfmdgx\":\"" + goodsInfo.getFSFMDGX() + "\",\"fsfddgx\":\"" + goodsInfo.getFSFDDGX()
-                            + "\"fbiller2\":" + workPerId;
+                    s = "{\"fdate\":\"" + dateNowStr + "\",\"fid\":\"" + goodsInfo.getFid() + "\",\"fqty\":" + real + ",\"fbiller\":\"" + MyAppliaction.uerName + "\",\"fbiller2\":" + workPerId + ",\"fentryid\":\"" + goodsInfo.getFentryid() +
+                            "\",\"fjyname\":\"" + goodsInfo.getFJYName() + "\",\"fsfsdgx\":\"" + goodsInfo.getFSFSDGX() + "\",\"fsfmdgx\":\"" + goodsInfo.getFSFMDGX() + "\",\"fsfddgx\":\"" + goodsInfo.getFSFDDGX();
                     if (i == mGoodsData.size() - 1) {
                         s = s + "\"}]}";
                     } else {

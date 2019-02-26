@@ -34,7 +34,7 @@ import java.util.Map;
  * @更新描述 ${TODO}
  */
 
-public class LoginActivity extends BaseActivity implements View.OnClickListener {
+public class  LoginActivity extends BaseActivity implements View.OnClickListener {
 
     private EditText mEdit_num;
     private EditText mEdit_psd;

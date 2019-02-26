@@ -86,17 +86,15 @@ public class Check_F extends Fragment {
         recy_check.setLayoutManager(new LinearLayoutManager(getContext()));
         checkAdapter = new RecyCheckAdapter(R.layout.rec_item_check, getContext(), mData);
         recy_check.setAdapter(checkAdapter);
-        checkAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                //填写合格数
-                writeHGNum(position);
-            }
-        });
+
         checkAdapter.setOnItemChildClickListener(new BaseQuickAdapter.OnItemChildClickListener() {
             @Override
             public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
                 switch (view.getId()) {
+                    case R.id.line_write:
+                        //填写合格数
+                        writeHGNum(position);
+                        break;
                     case R.id.tv_sure:
                         new SubmitTask(position).execute();
                         break;
@@ -129,7 +127,6 @@ public class Check_F extends Fragment {
     }
 
     private void refreshCheckList() {
-        swipe.setRefreshing(true);
         new CheckTask().execute();
     }
 
@@ -142,7 +139,8 @@ public class Check_F extends Fragment {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            ProgressDialogUtil.startShow(getContext(), "正在加载工序");
+            swipe.setRefreshing(true);
+            ProgressDialogUtil.startShow(getContext(), "正在查询工序检验单");
         }
 
         @Override
@@ -156,6 +154,12 @@ public class Check_F extends Fragment {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             swipe.setRefreshing(false);
+            ProgressDialogUtil.hideDialog();
+            if (null == mData) {
+                mData = new ArrayList<>();
+            } else {
+                mData.clear();
+            }
             Gson gson = new Gson();
             JSONArray jsonArray = null;
             try {
@@ -188,7 +192,7 @@ public class Check_F extends Fragment {
         @Override
         protected String doInBackground(Void... voids) {
             //获取当前时间
-            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");//设置日期格式
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");//设置日期格式
             String format = df.format(new Date());
 
             Map<String, Object> map = new HashMap<>();
@@ -216,6 +220,7 @@ public class Check_F extends Fragment {
             } else {
                 ToastUtils.showToast(getContext(), "提交失败");
             }
+            refreshCheckList();
         }
     }
 }
