@@ -170,6 +170,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         if (home_F != null) {
             ft.hide(home_F);
         }
+        if (check_F != null) {
+            ft.hide(check_F);
+        }
         if (user_F != null) {
             ft.hide(user_F);
         }
