@@ -13,6 +13,8 @@ public class Consts {
     public static String gongxuNo                = "JA_gongxuliuzhuanka";
     //提交接口
     public static String submit                  = "F_SendBill_SHProcRpt";
+    //查看工序
+    public static String JA_LIST2                 = "JA_LIST2";
     //    //查询项目单号
     //    public static String JA_order = "JA_gongxuliuzhuanka";
     //    //下单接口

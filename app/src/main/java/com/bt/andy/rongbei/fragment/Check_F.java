@@ -79,6 +79,7 @@ public class Check_F extends Fragment {
                 refreshCheckList();
             }
         });
+        refreshCheckList();
     }
 
     private void initRecyList() {

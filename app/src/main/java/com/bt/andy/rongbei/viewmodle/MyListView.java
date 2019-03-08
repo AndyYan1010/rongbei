@@ -5,7 +5,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.ListView;
 
-public class MyListView extends ListView {
+public class MyListView extends ListView {//自定义listview，可与scrollview嵌套使用，不会出现嵌套时listview显示不全，
 
 	public MyListView(Context context) {
 		super(context);
@@ -26,7 +26,4 @@ public class MyListView extends ListView {
 
 		super.onMeasure(widthMeasureSpec, expandSpec);
 	}
-
-	
-
 }
