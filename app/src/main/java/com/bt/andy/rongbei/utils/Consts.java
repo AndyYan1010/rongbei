@@ -11,10 +11,13 @@ public class Consts {
     public static String JA_zhiyuan              = "JA_zhiyuan";
     //查询工序流转卡卡号
     public static String gongxuNo                = "JA_gongxuliuzhuanka";
+    public static String PRO_GOODS               = "JA_forderbillno_fnumber";
     //提交接口
     public static String submit                  = "F_SendBill_SHProcRpt";
+    public static String SUB_PLAN_TIME           = "t_BOS200000000_fdate1";
     //查看工序
-    public static String JA_LIST2                 = "JA_LIST2";
+    public static String JA_LIST2                = "JA_LIST2";
+    public static String JA_LIST                 = "JA_LIST";
     //    //查询项目单号
     //    public static String JA_order = "JA_gongxuliuzhuanka";
     //    //下单接口

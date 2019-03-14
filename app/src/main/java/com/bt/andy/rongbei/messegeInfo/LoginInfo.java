@@ -24,6 +24,11 @@ public class LoginInfo {
     private String fgx;
     private String userid;
     private String jianyanid;
+    /**
+     * fdescription : 16402
+     */
+
+    private String fdescription;
 
     public String getStatus() {
         return status;
@@ -63,5 +68,13 @@ public class LoginInfo {
 
     public void setJianyanid(String jianyanid) {
         this.jianyanid = jianyanid;
+    }
+
+    public String getFdescription() {
+        return fdescription;
+    }
+
+    public void setFdescription(String fdescription) {
+        this.fdescription = fdescription;
     }
 }

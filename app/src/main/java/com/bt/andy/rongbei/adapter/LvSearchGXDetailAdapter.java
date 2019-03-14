@@ -52,9 +52,6 @@ public class LvSearchGXDetailAdapter extends BaseAdapter {
             view = View.inflate(mContext, R.layout.lv_search_gx, null);
             viewHolder.tv_fgx = view.findViewById(R.id.tv_fgx);
             viewHolder.tv_fhbnum = view.findViewById(R.id.tv_fhbnum);
-            viewHolder.tv_cz1 = view.findViewById(R.id.tv_cz1);
-            viewHolder.tv_cz2 = view.findViewById(R.id.tv_cz2);
-
             view.setTag(viewHolder);
         } else {
             viewHolder = (MyViewHolder) view.getTag();
@@ -66,12 +63,21 @@ public class LvSearchGXDetailAdapter extends BaseAdapter {
             hgnum = hgnum + bean.getFauxqtypass();
         }
         viewHolder.tv_fhbnum.setText("" + hgnum);
-        viewHolder.tv_cz1.setText(mList.get(i).getOperidsEntry().get(0).getFworkname1());
-        viewHolder.tv_cz2.setText(mList.get(i).getOperidsEntry().get(0).getFworkname2());
+        boolean isComp2 = true;
+        for (SearchGXInfo.OperidsBean.OperidsEntryBean bean : mList.get(i).getOperidsEntry()) {
+            if (!"1".equals(bean.getCompleted())) {
+                isComp2 = false;
+            }
+        }
+        if (isComp2){
+
+        }else {
+
+        }
         return view;
     }
 
     class MyViewHolder {
-        TextView tv_fgx, tv_fhbnum, tv_cz1, tv_cz2;
+        TextView tv_fgx, tv_fhbnum;
     }
 }

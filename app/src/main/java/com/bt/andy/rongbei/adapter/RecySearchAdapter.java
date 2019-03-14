@@ -1,6 +1,7 @@
 package com.bt.andy.rongbei.adapter;
 
 import android.content.Context;
+import android.view.View;
 import android.widget.ListView;
 
 import com.bt.andy.rongbei.R;
@@ -42,7 +43,26 @@ public class RecySearchAdapter extends BaseQuickAdapter<SearchGXInfo, BaseViewHo
         helper.setText(R.id.tv_fpnum, df.format(MyNumUtils.getDoubleNum(item.getFPlanAuxQty())));
 
         ListView lv_gx = helper.getView(R.id.lv_gx);
-        LvSearchGXDetailAdapter detailAdapter = new LvSearchGXDetailAdapter(mContext, item.getOperids());
-        lv_gx.setAdapter(detailAdapter);
+        boolean isComp = true;
+        for (int i = 0; i < item.getOperids().size(); i++) {
+            SearchGXInfo.OperidsBean bean = item.getOperids().get(i);
+            boolean isComp2 = true;
+            for (SearchGXInfo.OperidsBean.OperidsEntryBean nextBean : bean.getOperidsEntry()) {
+                if (!"1".equals(nextBean.getCompleted())) {
+                    isComp = false;
+                    isComp2 = false;
+                }
+            }
+            if (isComp2) {
+                item.getOperids().remove(i);
+            }
+        }
+        if (!isComp) {
+            lv_gx.setVisibility(View.VISIBLE);
+            LvSearchGXDetailAdapter detailAdapter = new LvSearchGXDetailAdapter(mContext, item.getOperids());
+            lv_gx.setAdapter(detailAdapter);
+        } else {
+            lv_gx.setVisibility(View.GONE);
+        }
     }
 }

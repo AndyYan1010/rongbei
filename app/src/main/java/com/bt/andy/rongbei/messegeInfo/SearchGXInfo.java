@@ -126,14 +126,15 @@ public class SearchGXInfo {
             /**
              * fauxqtypass : 1
              * fworkdate : 2019/2/19 0:00:00
-             * fworkname1 : 朱庆东
-             * fworkname2 :
              */
 
             private int fauxqtypass;
             private String fworkdate;
-            private String fworkname1;
-            private String fworkname2;
+            /**
+             * completed : 1
+             */
+
+            private String completed;
 
             public int getFauxqtypass() {
                 return fauxqtypass;
@@ -151,20 +152,12 @@ public class SearchGXInfo {
                 this.fworkdate = fworkdate;
             }
 
-            public String getFworkname1() {
-                return fworkname1;
+            public String getCompleted() {
+                return completed;
             }
 
-            public void setFworkname1(String fworkname1) {
-                this.fworkname1 = fworkname1;
-            }
-
-            public String getFworkname2() {
-                return fworkname2;
-            }
-
-            public void setFworkname2(String fworkname2) {
-                this.fworkname2 = fworkname2;
+            public void setCompleted(String completed) {
+                this.completed = completed;
             }
         }
     }

@@ -53,4 +53,10 @@
     <!--文字灰色-->
     <color name="word_gray">#7A7A7A</color>
 
+
+    <!--时间选择器-->
+    <color name="text1">#59B29C</color>
+    <color name="text2">#333333</color>
+    <color name="background">#FFFFFF</color>
+
 </resources>

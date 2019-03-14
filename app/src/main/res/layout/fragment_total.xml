@@ -52,16 +52,6 @@
                         android:spinnerMode="dialog">
                     </Spinner>
                 </LinearLayout>
-
-                <ImageView
-                    android:id="@+id/img_confirm"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="25dp"
-                    android:src="@drawable/ask_icon"
-                    android:visibility="gone"/>
             </RelativeLayout>
 
             <RelativeLayout
@@ -127,24 +117,6 @@
                         android:textColor="@color/vm_black_100"
                         android:textSize="14sp"/>
 
-                    <TextView
-                        android:id="@+id/tv_entry"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginRight="8dp"
-                        android:background="@drawable/bg_round_blue_50"
-                        android:gravity="right|center_vertical"
-                        android:paddingBottom="2dp"
-                        android:paddingLeft="15dp"
-                        android:paddingRight="15dp"
-                        android:paddingTop="2dp"
-                        android:text="录入"
-                        android:textColor="@color/white"
-                        android:textSize="14sp"
-                        android:visibility="gone"/>
-
                     <ImageView
                         android:id="@+id/img_scan0"
                         android:layout_width="25dp"
@@ -178,40 +150,39 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp">
+                android:layout_marginTop="8dp">
 
-                <RelativeLayout
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="80dp"
-                    android:gravity="center_vertical">
+                    android:background="@drawable/bg_round_frame"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
-                    <EditText
-                        android:id="@+id/edit_goods_id"
-                        style="@style/MyEditText"
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:id="@+id/tv_goodName"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/bg_round_frame"
-                        android:drawableLeft="@drawable/bar_code"
+                        android:drawableLeft="@drawable/search"
                         android:drawablePadding="8dp"
-                        android:hint="流转卡条码"
+                        android:gravity="center_vertical"
+                        android:hint="商品名称"
                         android:minHeight="30dp"
                         android:paddingLeft="10dp"
                         android:textColor="@color/vm_black_100"
                         android:textSize="14sp"/>
 
-                    <ImageView
-                        android:id="@+id/img_scan"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginRight="10dp"
-                        android:src="@drawable/scanning"/>
-                </RelativeLayout>
-
+                    <Spinner
+                        android:id="@+id/spi_goodname"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="35dp"
+                        android:spinnerMode="dialog">
+                    </Spinner>
+                </LinearLayout>
                 <TextView
-                    android:id="@+id/tv_surema"
+                    android:id="@+id/tv_search"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"

@@ -2,6 +2,7 @@ package com.bt.andy.rongbei;
 
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
@@ -25,6 +26,7 @@ public class BaseActivity extends AppCompatActivity {
             protectApp();
         }
         MyAppliaction.listActivity.add(this);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
     protected void protectApp() {
         Intent intent = new Intent(this, LoginActivity.class);

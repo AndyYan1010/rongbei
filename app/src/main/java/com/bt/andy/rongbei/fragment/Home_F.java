@@ -26,12 +26,14 @@ import android.widget.Toast;
 import com.bt.andy.rongbei.MyAppliaction;
 import com.bt.andy.rongbei.R;
 import com.bt.andy.rongbei.activity.SaomiaoUIActivity;
+import com.bt.andy.rongbei.adapter.SelectProGoodsAdapter;
 import com.bt.andy.rongbei.adapter.SelectWorkPerAdapter;
 import com.bt.andy.rongbei.adapter.SelectWorkProceAdapter;
 import com.bt.andy.rongbei.adapter.TransferAdapter;
 import com.bt.andy.rongbei.messegeInfo.GoodsInfo;
 import com.bt.andy.rongbei.messegeInfo.LiuZhuanInfo;
 import com.bt.andy.rongbei.messegeInfo.LoginInfo;
+import com.bt.andy.rongbei.messegeInfo.ProGoodsInfo;
 import com.bt.andy.rongbei.messegeInfo.WorkPerInfo;
 import com.bt.andy.rongbei.messegeInfo.WorkProceInfo;
 import com.bt.andy.rongbei.utils.Consts;
@@ -66,15 +68,21 @@ public class Home_F extends Fragment implements View.OnClickListener {
     private Dialog                 dialog;
     private Spinner                spi_cho;
     private Spinner                spi_sce;
+    private Spinner                spi_goodname;
     private SelectWorkProceAdapter workProceAdapter;//工序选择适配器
-    private SelectWorkPerAdapter   workPerAdapter;//工序选择适配器
-    private String workProid = "";//记录工序
-    private int    workPerId = 0;//记录操作员
+    private SelectWorkPerAdapter   workPerAdapter;//操作员选择适配器
+    private SelectProGoodsAdapter  proGoodsAdapter;//商品选择适配器
+    private String workProid   = "";//记录工序
+    private String goodsNumber = "";//记录商品单号
+    private String goodsName   = "";//记录商品名称
+    private int    workPerId   = 0;//记录操作员
     private List<WorkProceInfo> mListProce;//记录工序
     private List<WorkPerInfo>   mListPer;//记录操作员
-    private EditText            et_orderid, mEdit_goods_id;
-    private TextView mTv_surema, tv_sure0;
-    private ImageView img_scan0, mImg_scan;
+    private List<ProGoodsInfo>  mListGoods;//记录商品
+    private EditText            et_orderid;
+    private TextView            tv_sure0;
+    private TextView            tv_search;
+    private ImageView           img_scan0;
     private int MY_PERMISSIONS_REQUEST_CALL_PHONE2 = 1001;//申请照相机权限结果
     private int REQUEST_CODE                       = 1002;//接收扫描结果
     private int REQUEST_CODE0                      = 1003;//接收项目id扫描结果
@@ -96,12 +104,11 @@ public class Home_F extends Fragment implements View.OnClickListener {
         mTv_title = mRootView.findViewById(R.id.tv_title);
         spi_cho = mRootView.findViewById(R.id.spi_cho);//工序下拉选择
         spi_sce = mRootView.findViewById(R.id.spi_sce);//操作员下拉选择
+        spi_goodname = mRootView.findViewById(R.id.spi_goodname);//项目商品下拉选择
         et_orderid = mRootView.findViewById(R.id.et_orderid);//输入项目id
         img_scan0 = mRootView.findViewById(R.id.img_scan0);//扫描
-        mImg_scan = mRootView.findViewById(R.id.img_scan);//扫描
-        mEdit_goods_id = mRootView.findViewById(R.id.edit_goods_id);//输入商品id
         tv_sure0 = mRootView.findViewById(R.id.tv_sure0);//确认输入的项目id
-        mTv_surema = mRootView.findViewById(R.id.tv_surema);//确认输入的流转卡id
+        tv_search = mRootView.findViewById(R.id.tv_search);//确认选择的项目中商品名称
         rec_detail = mRootView.findViewById(R.id.rec_detail);
         mBt_submit = mRootView.findViewById(R.id.bt_submit);//总表提交服务器
     }
@@ -112,15 +119,16 @@ public class Home_F extends Fragment implements View.OnClickListener {
         initGXList();
         //初始化职员列表
         initZYList();
+
         //初始化工序详情列表
         mRecData = new ArrayList();
         mGoodsData = new ArrayList();
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 8);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 10);
         gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                if (position % 7 == 0 || position % 7 == 2) {
-                    return 1;
+                if (position % 8 == 1 || position % 8 == 3) {
+                    return 2;
                 } else {
                     return 1;
                 }
@@ -129,16 +137,52 @@ public class Home_F extends Fragment implements View.OnClickListener {
         rec_detail.setLayoutManager(gridLayoutManager);
         adapter = new TransferAdapter(getContext(), mRecData, mGoodsData, mListProce, workProid);
         rec_detail.setAdapter(adapter);
+        //初始化项目商品列表
+        initProGoods();
+
+
         img_scan0.setOnClickListener(this);
         tv_sure0.setOnClickListener(this);
-        mImg_scan.setOnClickListener(this);
-        mTv_surema.setOnClickListener(this);
+        tv_search.setOnClickListener(this);
         mBt_submit.setOnClickListener(this);
         if (mGoodsData.size() == 0) {
             mBt_submit.setVisibility(View.GONE);
         }
         //查询所有工序
         new WorkProTask("", "").execute();
+    }
+
+    private void initProGoods() {
+        mListGoods = new ArrayList();
+        ProGoodsInfo goodsInfo = new ProGoodsInfo();
+        goodsInfo.setFname("请选择商品名称");
+        mListGoods.add(goodsInfo);
+        proGoodsAdapter = new SelectProGoodsAdapter(getContext(), mListGoods);
+        spi_goodname.setAdapter(proGoodsAdapter);
+        spi_goodname.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if (i == 0) {
+                    ToastUtils.showToast(getContext(), "请选择商品");
+                    goodsNumber = "";
+                    goodsName = "";
+                } else {
+                    goodsNumber = mListGoods.get(i).getFnumber();
+                    goodsName = mListGoods.get(i).getFname();
+                    //根据商品名称，对应查询
+                    searchDetailByGoods();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+    }
+
+    private void searchDetailByGoods() {
+
     }
 
     private void initZYList() {
@@ -198,6 +242,8 @@ public class Home_F extends Fragment implements View.OnClickListener {
         new WorkPerTask(workProid).execute();
     }
 
+    private String orderId;
+
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -209,8 +255,8 @@ public class Home_F extends Fragment implements View.OnClickListener {
                 //动态申请照相机权限
                 scanningCode(1);
                 break;
-            case R.id.tv_sure0:
-                String orderId = String.valueOf(et_orderid.getText()).trim();
+            case R.id.tv_sure0://查看项目详情
+                orderId = String.valueOf(et_orderid.getText()).trim();
                 if (null == orderId || "".equals(orderId) || "项目单号".equals(orderId)) {
                     ToastUtils.showToast(getContext(), "请输入项目单号");//SEORD000005
                     return;
@@ -218,19 +264,28 @@ public class Home_F extends Fragment implements View.OnClickListener {
                 //TODO:查询项目
                 searchForData(orderId);
                 break;
-            case R.id.tv_surema:
-                String orderId1 = String.valueOf(et_orderid.getText()).trim();
-                if (null == orderId1 || "".equals(orderId1) || "项目单号".equals(orderId1)) {
-                    ToastUtils.showToast(getContext(), "请先输入查找项目单号");
+            //            case R.id.tv_surema:
+            //                String orderId1 = String.valueOf(et_orderid.getText()).trim();
+            //                if (null == orderId1 || "".equals(orderId1) || "项目单号".equals(orderId1)) {
+            //                    ToastUtils.showToast(getContext(), "请先输入查找项目单号");
+            //                    return;
+            //                }
+            //                String goodsid = String.valueOf(mEdit_goods_id.getText()).trim();
+            //                if (null == goodsid || "".equals(goodsid) || "流转卡条码".equals(goodsid)) {
+            //                    ToastUtils.showToast(getContext(), "请输入流转卡条码");
+            //                    return;
+            //                }
+            //                //TODO:跳转流转卡号对应的内容
+            //                searchFromData(goodsid);
+            //                break;
+            case R.id.tv_search:
+                orderId = String.valueOf(et_orderid.getText()).trim();
+                if (null == orderId || "".equals(orderId) || "项目单号".equals(orderId)) {
+                    ToastUtils.showToast(getContext(), "请输入项目单号");//SEORD000005
                     return;
                 }
-                String goodsid = String.valueOf(mEdit_goods_id.getText()).trim();
-                if (null == goodsid || "".equals(goodsid) || "流转卡条码".equals(goodsid)) {
-                    ToastUtils.showToast(getContext(), "请输入流转卡条码");
-                    return;
-                }
-                //TODO:跳转流转卡号对应的内容
-                searchFromData(goodsid);
+                //查询项目详情
+                new ProjectTask(orderId, workProid).execute();
                 break;
             case R.id.bt_submit:
                 //TODO:提交总表到服务器
@@ -275,7 +330,10 @@ public class Home_F extends Fragment implements View.OnClickListener {
     }
 
     private void searchForData(String orderId) {
+        //查询项目详情
         new ProjectTask(orderId, workProid).execute();
+        //查询项目商品列表
+        new ProGoodsTask(orderId).execute();
     }
 
     private void searchFromData(String goodsid) {
@@ -306,9 +364,9 @@ public class Home_F extends Fragment implements View.OnClickListener {
         } else {
             Intent intent = new Intent(getContext(), SaomiaoUIActivity.class);//这是一个自定义的扫描界面，扫描UI框放大了。
             //            Intent intent = new Intent(getContext(), CaptureActivity.class);
-            if (kind == 0) {
+            if (kind == 0) {//查看项目单号
                 startActivityForResult(intent, REQUEST_CODE0);
-            } else {
+            } else {//1是流转卡（已删除）
                 startActivityForResult(intent, REQUEST_CODE);
             }
         }
@@ -331,7 +389,7 @@ public class Home_F extends Fragment implements View.OnClickListener {
                     String result = bundle.getString(CodeUtils.RESULT_STRING);
                     //获取商品id信息，跳转activity展示，在新的页面确定后添加到listview中
                     if (requestCode == REQUEST_CODE) {
-                        searchGoodsInfo(result, mEdit_goods_id, 1);
+                        //                        searchGoodsInfo(result, mEdit_goods_id, 1);
                     } else {
                         searchGoodsInfo(result, et_orderid, 0);
                     }
@@ -342,14 +400,14 @@ public class Home_F extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void searchGoodsInfo(String goodsID, EditText et, int which) {
-        ToastUtils.showToast(getContext(), "商品编码：" + goodsID);
-        et.setText(goodsID);
+    private void searchGoodsInfo(String proID, EditText et, int which) {
+        ToastUtils.showToast(getContext(), "商品编码：" + proID);
+        et.setText(proID);
         //根据id查询详情，项目id查询
         if (which == 0) {//传入的是项目id
-            searchForData(goodsID);
+            searchForData(proID);
         } else {//查询的是流水卡号
-            searchFromData(goodsID);
+            searchFromData(proID);
         }
     }
 
@@ -414,6 +472,14 @@ public class Home_F extends Fragment implements View.OnClickListener {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            if (null == mListPer) {
+                mListPer = new ArrayList<>();
+            } else {
+                mListPer.clear();
+            }
+            WorkPerInfo workProinfo = new WorkPerInfo();
+            workProinfo.setFname("请选择操作员");
+            mListPer.add(workProinfo);
             ProgressDialogUtil.startShow(getContext(), "正在查询职员");
         }
 
@@ -467,7 +533,10 @@ public class Home_F extends Fragment implements View.OnClickListener {
             Map<String, Object> map = new HashMap<>();
             map.put("passid", "8182");
             map.put("forderbillno", forderbillno);
+            map.put("flzkno", "");
             map.put("fgongxu", fgongxu);
+            map.put("fnumber", goodsNumber);
+            map.put("fname", "");
             return SoapUtil.requestWebService(Consts.gongxuNo, map);
         }
 
@@ -549,6 +618,55 @@ public class Home_F extends Fragment implements View.OnClickListener {
         }
     }
 
+    //查询项目商品
+    class ProGoodsTask extends AsyncTask<Void, String, String> {
+        String forderbillno;
+
+        ProGoodsTask(String forderbillno) {
+            this.forderbillno = forderbillno;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            if (null == mListGoods) {
+                mListGoods = new ArrayList<>();
+            } else {
+                mListGoods.clear();
+            }
+            ProGoodsInfo goodsInfo = new ProGoodsInfo();
+            goodsInfo.setFname("请选择商品名称");
+            mListGoods.add(goodsInfo);
+            proGoodsAdapter.notifyDataSetChanged();
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("passid", "8182");
+            map.put("forderbillno", forderbillno);
+            return SoapUtil.requestWebService(Consts.PRO_GOODS, map);
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            ProgressDialogUtil.hideDialog();
+            Gson gson = new Gson();
+            JSONArray jsonArray = null;
+            try {
+                jsonArray = new JSONArray(s);
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    ProGoodsInfo goodsInfo = gson.fromJson(jsonArray.get(i).toString(), ProGoodsInfo.class);
+                    mListGoods.add(goodsInfo);
+                }
+                proGoodsAdapter.notifyDataSetChanged();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     //提交
     class SubmitTask extends AsyncTask<Void, String, String> {
         String FJSONMSG;
@@ -568,6 +686,10 @@ public class Home_F extends Fragment implements View.OnClickListener {
             Map<String, Object> map = new HashMap<>();
             map.put("passid", "8182");
             map.put("FJSONMSG", FJSONMSG);
+            map.put("forderbillno", orderId);
+            map.put("fgongxu", workProid);
+            map.put("fnumber", goodsNumber);
+            map.put("fname", "");
             return SoapUtil.requestWebService(Consts.submit, map);
         }
 
@@ -589,7 +711,6 @@ public class Home_F extends Fragment implements View.OnClickListener {
                     Gson gson = new Gson();
                     LoginInfo info = gson.fromJson(jsonArray.get(0).toString(), LoginInfo.class);
                     message = info.getMessage();
-
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

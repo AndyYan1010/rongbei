@@ -1,6 +1,5 @@
 package com.bt.andy.rongbei.activity;
 
-import android.app.Dialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -34,13 +33,12 @@ import java.util.Map;
  * @更新描述 ${TODO}
  */
 
-public class  LoginActivity extends BaseActivity implements View.OnClickListener {
+public class LoginActivity extends BaseActivity implements View.OnClickListener {
 
     private EditText mEdit_num;
     private EditText mEdit_psd;
     private CheckBox ck_remPas;//记住密码
     private Button   mBt_submit;
-    private Dialog   dialog;
     private boolean isRem = false;
 
     @Override
@@ -56,7 +54,6 @@ public class  LoginActivity extends BaseActivity implements View.OnClickListener
         mEdit_psd = (EditText) findViewById(R.id.edit_psd);
         mBt_submit = (Button) findViewById(R.id.bt_login);
         ck_remPas = (CheckBox) findViewById(R.id.ck_remPas);
-        dialog = new Dialog(this);
     }
 
     private void setData() {
@@ -146,6 +143,7 @@ public class  LoginActivity extends BaseActivity implements View.OnClickListener
             if ("1".equals(status)) {
                 MyAppliaction.uerName = username;
                 MyAppliaction.userType = info.getFgx();
+                MyAppliaction.userRight = info.getFdescription();
                 MyAppliaction.userID = Long.valueOf(info.getUserid());
                 MyAppliaction.fjianyanyuan = Long.valueOf(info.getJianyanid());
                 if (null == MyAppliaction.userType) {
