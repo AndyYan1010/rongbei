@@ -28,6 +28,11 @@ public class PlanGXInfo {
     private String FNOTE;
     private String FName;
     private String FName1;
+    /**
+     * changeTimes : 0
+     */
+
+    private int    changeTimes;
 
     public String getFDate1() {
         return FDate1;
@@ -83,5 +88,13 @@ public class PlanGXInfo {
 
     public void setFName1(String FName1) {
         this.FName1 = FName1;
+    }
+
+    public int getChangeTimes() {
+        return changeTimes;
+    }
+
+    public void setChangeTimes(int changeTimes) {
+        this.changeTimes = changeTimes;
     }
 }

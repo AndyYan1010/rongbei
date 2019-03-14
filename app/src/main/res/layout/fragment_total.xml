@@ -177,10 +177,13 @@
                         android:id="@+id/spi_goodname"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="2dp"
+                        android:layout_marginTop="2dp"
                         android:minHeight="35dp"
                         android:spinnerMode="dialog">
                     </Spinner>
                 </LinearLayout>
+
                 <TextView
                     android:id="@+id/tv_search"
                     android:layout_width="wrap_content"

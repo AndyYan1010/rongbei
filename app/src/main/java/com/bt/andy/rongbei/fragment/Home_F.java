@@ -50,6 +50,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -290,30 +291,26 @@ public class Home_F extends Fragment implements View.OnClickListener {
             case R.id.bt_submit:
                 //TODO:提交总表到服务器
                 //{"passid": "8182","items":[{"fdate":"2018-07-23","fid":"1010","fentryid":"14","fqty":2,"fbiller":"morningstar","fjyname":"免检","fsfsdgx":"否","fsfmdgx":"是","fsfddgx":"是"}]}
-                String partArg = "{\"passid\": \"8182\",\"items\":[";
-                Date date = new Date();
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                String dateNowStr = sdf.format(date);
-                String s = "";
                 mGoodsData.remove(0);
-                for (int i = 0; i < mGoodsData.size(); i++) {
-                    GoodsInfo goodsInfo = mGoodsData.get(i);
-                    String real = goodsInfo.getReal();
-                    if ("".equals(real) || "请点击修改".equals(real) || "0".equals(real)) {
-                        mGoodsData.remove(i);
+                Iterator<GoodsInfo> iterator = mGoodsData.iterator();
+                while (iterator.hasNext()) {
+                    String real = iterator.next().getReal();
+                    if ("".equals(real) || "请点击修改".equals(real) || "0.0".equals(real) || "0".equals(real)) {
+                        iterator.remove();
                     }
                 }
                 if (mGoodsData.size() == 0) {
                     ToastUtils.showToast(getContext(), "实作数都为0，无需提交");
                     return;
                 }
+                String s = "";
+                String partArg = "{\"passid\": \"8182\",\"items\":[";
+                Date date = new Date();
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                String dateNowStr = sdf.format(date);
                 for (int i = 0; i < mGoodsData.size(); i++) {
                     GoodsInfo goodsInfo = mGoodsData.get(i);
-                    String real = goodsInfo.getReal();
-                    if ("".equals(real) || "请点击修改".equals(real)) {
-                        real = "0";
-                    }
-                    s = "{\"fdate\":\"" + dateNowStr + "\",\"fid\":\"" + goodsInfo.getFid() + "\",\"fqty\":" + real + ",\"fbiller\":\"" + MyAppliaction.uerName + "\",\"fbiller2\":" + workPerId + ",\"fentryid\":\"" + goodsInfo.getFentryid() +
+                    s = "{\"fdate\":\"" + dateNowStr + "\",\"fid\":\"" + goodsInfo.getFid() + "\",\"fqty\":" + goodsInfo.getReal() + ",\"fbiller\":\"" + MyAppliaction.uerName + "\",\"fbiller2\":" + workPerId + ",\"fentryid\":\"" + goodsInfo.getFentryid() +
                             "\",\"fjyname\":\"" + goodsInfo.getFJYName() + "\",\"fsfsdgx\":\"" + goodsInfo.getFSFSDGX() + "\",\"fsfmdgx\":\"" + goodsInfo.getFSFMDGX() + "\",\"fsfddgx\":\"" + goodsInfo.getFSFDDGX();
                     if (i == mGoodsData.size() - 1) {
                         s = s + "\"}]}";

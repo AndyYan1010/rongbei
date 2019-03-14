@@ -32,6 +32,11 @@ public class RecyPlanAdapter extends BaseQuickAdapter<PlanGXInfo, BaseViewHolder
         helper.setText(R.id.tv_compTime, null == item.getFDate2() ? "--" : item.getFDate2());
         helper.setText(R.id.tv_per, item.getFName1());
         helper.setText(R.id.tv_time, null == item.getFDate1() ? "--" : item.getFDate1());
+        if (item.getChangeTimes() > 0) {
+            helper.setTextColor(R.id.tv_time, mContext.getResources().getColor(R.color.red));
+        } else {
+            helper.setTextColor(R.id.tv_time, mContext.getResources().getColor(R.color.green_100));
+        }
         //添加子控件的点击事件
         //        helper.addOnClickListener(R.id.tv_time);
     }
