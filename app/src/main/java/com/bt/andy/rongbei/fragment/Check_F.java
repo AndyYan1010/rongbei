@@ -1,9 +1,15 @@
 package com.bt.andy.rongbei.fragment;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,10 +19,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bt.andy.rongbei.MyAppliaction;
 import com.bt.andy.rongbei.R;
+import com.bt.andy.rongbei.activity.SaomiaoUIActivity;
 import com.bt.andy.rongbei.adapter.RecyCheckAdapter;
 import com.bt.andy.rongbei.messegeInfo.CheckInfo;
 import com.bt.andy.rongbei.utils.Consts;
@@ -25,6 +34,7 @@ import com.bt.andy.rongbei.utils.SoapUtil;
 import com.bt.andy.rongbei.utils.ToastUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.google.gson.Gson;
+import com.uuzuche.lib_zxing.activity.CodeUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -45,13 +55,17 @@ import java.util.Map;
  * @更新描述 ${TODO}
  */
 
-public class Check_F extends Fragment {
+public class Check_F extends Fragment implements View.OnClickListener {
     private View               mRootView;
     private TextView           mTv_title;
+    private EditText           et_orderid;
+    private ImageView          img_scan0;
+    private TextView           tv_sure0;
     private SwipeRefreshLayout swipe;
     private RecyclerView       recy_check;
     private RecyCheckAdapter   checkAdapter;
     private List<CheckInfo>    mData;
+    private String             orderID;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -63,6 +77,9 @@ public class Check_F extends Fragment {
 
     private void initView() {
         mTv_title = mRootView.findViewById(R.id.tv_title);
+        et_orderid = mRootView.findViewById(R.id.et_orderid);//输入项目id
+        img_scan0 = mRootView.findViewById(R.id.img_scan0);//扫描
+        tv_sure0 = mRootView.findViewById(R.id.tv_sure0);//确认输入的项目id
         swipe = mRootView.findViewById(R.id.swipe);
         recy_check = mRootView.findViewById(R.id.recy_check);
     }
@@ -76,10 +93,51 @@ public class Check_F extends Fragment {
             @Override
             public void onRefresh() {
                 //刷新列表
-                refreshCheckList();
+                refreshCheckList(orderID);
             }
         });
-        refreshCheckList();
+        img_scan0.setOnClickListener(this);
+        tv_sure0.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.img_scan0:
+                //动态申请照相机权限,开启照相机
+                scanningCode();
+                break;
+            case R.id.tv_sure0:
+                orderID = String.valueOf(et_orderid.getText()).trim();
+                refreshCheckList(orderID);
+                break;
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        /**
+         * 处理二维码扫描结果
+         */
+        if (requestCode == REQUEST_CODE0) {
+            //处理扫描结果（在界面上显示）
+            if (null != data) {
+                Bundle bundle = data.getExtras();
+                if (bundle == null) {
+                    return;
+                }
+                if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_SUCCESS) {
+                    String result = bundle.getString(CodeUtils.RESULT_STRING);
+                    //订单id
+                    orderID = result;
+                    et_orderid.setText(orderID);
+                    refreshCheckList(orderID);
+                } else if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_FAILED) {
+                    Toast.makeText(getContext(), "解析二维码失败", Toast.LENGTH_LONG).show();
+                }
+            }
+        }
     }
 
     private void initRecyList() {
@@ -102,6 +160,29 @@ public class Check_F extends Fragment {
                 }
             }
         });
+    }
+
+    private void refreshCheckList(String orderID) {
+        if (null == orderID)
+            orderID = "";
+        new CheckTask(orderID).execute();
+    }
+
+    private int MY_PERMISSIONS_REQUEST_CALL_PHONE2 = 1001;//申请照相机权限结果
+    private int REQUEST_CODE0                      = 1003;//接收项目id扫描结果
+
+    private void scanningCode() {
+        //第二个参数是需要申请的权限
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            //权限还没有授予，需要在这里写申请权限的代码
+            ActivityCompat.requestPermissions((Activity) getContext(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA},
+                    MY_PERMISSIONS_REQUEST_CALL_PHONE2);
+        } else {
+            Intent intent = new Intent(getContext(), SaomiaoUIActivity.class);//这是一个自定义的扫描界面，扫描UI框放大了。
+            //            Intent intent = new Intent(getContext(), CaptureActivity.class);
+            startActivityForResult(intent, REQUEST_CODE0);
+        }
     }
 
     private void writeHGNum(final int position) {
@@ -127,14 +208,12 @@ public class Check_F extends Fragment {
                 }).setNegativeButton("取消", null).show();
     }
 
-    private void refreshCheckList() {
-        new CheckTask().execute();
-    }
-
     //查询所有检验单
     class CheckTask extends AsyncTask<Void, String, String> {
+        private String fbillno;
 
-        CheckTask() {
+        CheckTask(String fbillno) {
+            this.fbillno = fbillno;
         }
 
         @Override
@@ -148,6 +227,7 @@ public class Check_F extends Fragment {
         protected String doInBackground(Void... voids) {
             Map<String, Object> map = new HashMap<>();
             map.put("passid", "8182");
+            map.put("fbillno", fbillno);
             return SoapUtil.requestWebService(Consts.JA_gongxujianyan, map);
         }
 
@@ -221,7 +301,7 @@ public class Check_F extends Fragment {
             } else {
                 ToastUtils.showToast(getContext(), "提交失败");
             }
-            refreshCheckList();
+            refreshCheckList(orderID);
         }
     }
 }

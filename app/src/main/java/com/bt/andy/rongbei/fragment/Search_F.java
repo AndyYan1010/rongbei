@@ -141,6 +141,7 @@ public class Search_F extends Fragment implements View.OnClickListener {
                     String result = bundle.getString(CodeUtils.RESULT_STRING);
                     //获取商品id信息，跳转activity展示，在新的页面确定后添加到listview中
                     orderID = result;
+                    et_orderid.setText(orderID);
                     searchList();
                 } else if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_FAILED) {
                     Toast.makeText(getContext(), "解析二维码失败", Toast.LENGTH_LONG).show();

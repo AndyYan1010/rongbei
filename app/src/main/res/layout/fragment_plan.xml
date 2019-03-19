@@ -30,7 +30,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_round_frame"
-                android:drawableLeft="@drawable/member"
+                android:drawableLeft="@drawable/icon_num"
                 android:drawablePadding="8dp"
                 android:hint="项目单号"
                 android:minHeight="30dp"

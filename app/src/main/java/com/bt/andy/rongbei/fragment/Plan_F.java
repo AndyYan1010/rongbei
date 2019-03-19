@@ -151,11 +151,11 @@ public class Plan_F extends Fragment implements View.OnClickListener {
         }
     }
 
-    private String planJson;
-    //    private boolean isAllPlaned;
+    private String  planJson;
+    private boolean isAllPlaned;
 
     private void sendPlanDate() {
-        //        isAllPlaned = true;
+        isAllPlaned = true;
         if (null == orderID || "".equals(orderID)) {
             ToastUtils.showToast(getContext(), "请先填写查找订单号");
             return;
@@ -164,15 +164,15 @@ public class Plan_F extends Fragment implements View.OnClickListener {
             ToastUtils.showToast(getContext(), "没有需要提交的数据");
             return;
         }
-        //        for (int i = 0; i < mData.size(); i++) {
-        //            if (null == mData.get(i).getFDate1() || "".equals(mData.get(i).getFDate1()) || "--".equals(mData.get(i).getFDate1())) {
-        //                isAllPlaned = false;
-        //            }
-        //        }
-        //        if (!isAllPlaned) {
-        //            ToastUtils.showToast(getContext(), "您有条目未设置计划时间，请填写");
-        //            return;
-        //        }
+        for (int i = 0; i < mData.size(); i++) {
+            if (null == mData.get(i).getFDate1() || "".equals(mData.get(i).getFDate1()) || "--".equals(mData.get(i).getFDate1())) {
+                isAllPlaned = false;
+            }
+        }
+        if (!isAllPlaned) {
+            ToastUtils.showToast(getContext(), "您有条目未设置计划时间，请填写");
+            return;
+        }
 
         //{"passid": "8182","items": [{"fdate": "2018-04-19","FID":1005,"FIndex":1},{"fdate": "2018-04-19","FID":1005,"FIndex":2}]}
         planJson = "{\"passid\": \"8182\",\"items\": [";
@@ -226,7 +226,7 @@ public class Plan_F extends Fragment implements View.OnClickListener {
                 mData.get(position).setChangeTimes(1);
                 planAdapter.notifyDataSetChanged();
             }
-        }, "2000-01-01 00:00", "2090-12-31 00:00"); // 初始化日期格式请用：yyyy-MM-dd HH:mm，否则不能正常运行
+        }, "2000-01-01 00:00", "2090-12-31 00:00"); //初始化日期格式请用：yyyy-MM-dd HH:mm，否则不能正常运行
         dpk1.showSpecificTime(false); // 显示时和分
         dpk1.setIsLoop(true); // 允许循环滚动
         dpk1.show(mStartTime);
@@ -280,6 +280,7 @@ public class Plan_F extends Fragment implements View.OnClickListener {
         }
     }
 
+    //查看生产任务单列表
     class ItemTask extends AsyncTask<Void, String, String> {
         String sql;
 

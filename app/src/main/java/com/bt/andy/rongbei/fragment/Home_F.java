@@ -291,7 +291,8 @@ public class Home_F extends Fragment implements View.OnClickListener {
             case R.id.bt_submit:
                 //TODO:提交总表到服务器
                 //{"passid": "8182","items":[{"fdate":"2018-07-23","fid":"1010","fentryid":"14","fqty":2,"fbiller":"morningstar","fjyname":"免检","fsfsdgx":"否","fsfmdgx":"是","fsfddgx":"是"}]}
-                mGoodsData.remove(0);
+                if (mGoodsData.size() > 0 && "流转卡号".equals(mGoodsData.get(0).getGoodsid()))
+                    mGoodsData.remove(0);
                 Iterator<GoodsInfo> iterator = mGoodsData.iterator();
                 while (iterator.hasNext()) {
                     String real = iterator.next().getReal();
