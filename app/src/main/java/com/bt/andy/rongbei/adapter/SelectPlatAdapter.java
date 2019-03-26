@@ -57,7 +57,7 @@ public class SelectPlatAdapter extends BaseAdapter {
             viewHolder = (MyViewHolder) view.getTag();
         }
         viewHolder.tv_kind.setGravity(Gravity.LEFT);
-        viewHolder.tv_kind.setText("    *" + mList.get(i).getFid() + "：" + mList.get(i).getFnote2());
+        viewHolder.tv_kind.setText("    *" + mList.get(i).getFid() + "：" + mList.get(i).getFnote2()+"#"+mList.get(i).getFText());
         return view;
     }
 

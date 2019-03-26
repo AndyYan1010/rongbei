@@ -122,6 +122,7 @@ public class Plan_F extends Fragment implements View.OnClickListener {
 
     private void initData() {
         mTv_title.setText("工序计划");
+        tv_type.setText("请点击选择");
         linear_right.setVisibility(View.VISIBLE);
         //初始化列表
         initRecyList();
@@ -233,7 +234,7 @@ public class Plan_F extends Fragment implements View.OnClickListener {
     //跳出pop可多选择商品或日期类别
     private void showPop2SelectGoods() {
         if (null == mGoogsList || mGoogsList.size() < 1) {
-            ToastUtils.showToast(getContext(), "没有产品列表信息，请重新搜索。");
+            ToastUtils.showToast(getContext(), "没有产品列表信息，请重新查询。");
             return;
         }
         openHelper = new PopupOpenHelper(getContext(), tv_type, R.layout.popup_choice);
@@ -360,7 +361,7 @@ public class Plan_F extends Fragment implements View.OnClickListener {
             }
         }
         if (!isAllPlaned) {
-            ToastUtils.showToast(getContext(), "您有条目未设置计划时间，请填写");
+            ToastUtils.showToast(getContext(), "您有内容未设置计划时间，请填写");
             return;
         }
 
@@ -451,7 +452,7 @@ public class Plan_F extends Fragment implements View.OnClickListener {
         if ("排单".equals(String.valueOf(tv_kind.getText()))) {
             sql = "select b.FName,c.FName,a.FID,a.FIndex,d.FNOTE,convert(varchar(50),FDate1,23)FDate1,convert(varchar(50),FDate2,23)FDate2 " +
                     "from t_BOS200000000Entry2 a inner join t_BOS200000000 d on a.FID=d.FID left join  t_Item_3001 b on a.FBase4=b.FItemID " +
-                    "left join t_Emp c on c.FItemID=a.FBase1  where d.FNOTE ='" + innerID + "' order by a.FID,a.FIndex";
+                    "left join t_Emp c on c.FItemID=a.FBase1  where d.fid ='" + innerID + "' order by a.FID,a.FIndex";
         } else {
             sql = "select b.FName,c.FName,a.FID,a.FIndex,d.FNOTE,convert(varchar(50),FDate1,23)FDate1,convert(varchar(50),FDate2,23)FDate2 " +
                     "from t_BOS200000000Entry2 a inner join t_BOS200000000 d on a.FID=d.FID left join  t_Item_3001 b on a.FBase4=b.FItemID " +
@@ -635,8 +636,8 @@ public class Plan_F extends Fragment implements View.OnClickListener {
 
     //查看选择单据内码
     class ItemInnerIDTask extends AsyncTask<Void, String, String> {
-        String            sql;
-        String            fnumStr;
+        String sql;
+        String fnumStr;
 
         ItemInnerIDTask(String sql, String fnumStr) {
             this.sql = sql;
