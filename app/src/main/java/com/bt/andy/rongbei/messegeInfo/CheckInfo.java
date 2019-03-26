@@ -51,6 +51,11 @@ public class CheckInfo {
      */
 
     private String fnote;
+    /**
+     * FDBCode : FC029$$1
+     */
+
+    private String FDBCode;
 
     public String getFBillNo() {
         return FBillNo;
@@ -138,5 +143,13 @@ public class CheckInfo {
 
     public void setFnote(String fnote) {
         this.fnote = fnote;
+    }
+
+    public String getFDBCode() {
+        return FDBCode;
+    }
+
+    public void setFDBCode(String FDBCode) {
+        this.FDBCode = FDBCode;
     }
 }

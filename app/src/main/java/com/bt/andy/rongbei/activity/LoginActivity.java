@@ -136,24 +136,28 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             ProgressDialogUtil.hideDialog();
-            Gson gson = new Gson();
-            LoginInfo info = gson.fromJson(s, LoginInfo.class);
-            String status = info.getStatus();
-            String message = info.getMessage();
-            if ("1".equals(status)) {
-                MyAppliaction.uerName = username;
-                MyAppliaction.userType = info.getFgx();
-                MyAppliaction.userRight = info.getFdescription();
-                MyAppliaction.userID = Long.valueOf(info.getUserid());
-                MyAppliaction.fjianyanyuan = Long.valueOf(info.getJianyanid());
-                if (null == MyAppliaction.userType) {
-                    MyAppliaction.userType = "";
+            try {
+                Gson gson = new Gson();
+                LoginInfo info = gson.fromJson(s, LoginInfo.class);
+                String status = info.getStatus();
+                String message = info.getMessage();
+                if ("1".equals(status)) {
+                    MyAppliaction.uerName = username;
+                    MyAppliaction.userType = info.getFgx();
+                    MyAppliaction.userRight = info.getFdescription();
+                    MyAppliaction.userID = Long.valueOf(info.getUserid());
+                    MyAppliaction.fjianyanyuan = Long.valueOf(info.getJianyanid());
+                    if (null == MyAppliaction.userType) {
+                        MyAppliaction.userType = "";
+                    }
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
                 }
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
+                ToastUtils.showToast(LoginActivity.this, message);
+            } catch (Exception e) {
+                ToastUtils.showToast(LoginActivity.this, "网络错误," + s);
             }
-            ToastUtils.showToast(LoginActivity.this, message);
         }
     }
 }

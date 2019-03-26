@@ -18,6 +18,7 @@ public class Consts {
     //查看工序
     public static String JA_LIST2                = "JA_LIST2";
     public static String JA_LIST                 = "JA_LIST";
+    public static String T_BOS200000000          = "t_BOS200000000";
     //    //查询项目单号
     //    public static String JA_order = "JA_gongxuliuzhuanka";
     //    //下单接口

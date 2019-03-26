@@ -38,6 +38,8 @@
     <color name="blue_38">#612384fe</color>
     <color name="blue_12">#1e2384fe</color>
     <color name="deepskyblue">#00BFFF</color>
+    <color name="blue">#0000FF</color>
+    <color name="blue_10">#6687CEFA</color>
 
     <!-- 橙色 -->
     <color name="orange">#FFA500</color>

@@ -31,7 +31,7 @@ public class RecyCheckAdapter extends BaseQuickAdapter<CheckInfo, BaseViewHolder
 
     @Override
     protected void convert(final BaseViewHolder helper, final CheckInfo item) {
-        helper.setText(R.id.tv_date, "--");
+        helper.setText(R.id.tv_date, item.getFDBCode());
         helper.setText(R.id.tv_fno, item.getFBillNo());
         helper.setText(R.id.tv_tnum, item.getFNumber());
         helper.setText(R.id.tv_fname, item.getFName());

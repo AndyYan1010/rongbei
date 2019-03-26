@@ -67,18 +67,103 @@
             android:visibility="visible"/>
     </RelativeLayout>
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swipe"
+    <FrameLayout
+        android:id="@+id/frame"
+        android:layout_below="@+id/relative"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:id="@+id/relt_pors"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="80dp"
+                android:background="@drawable/bg_round_frame"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_innerName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/search"
+                    android:drawablePadding="8dp"
+                    android:gravity="center_vertical"
+                    android:hint="单据名称"
+                    android:minHeight="30dp"
+                    android:paddingLeft="10dp"
+                    android:textColor="@color/vm_black_100"
+                    android:textSize="14sp"/>
+
+                <Spinner
+                    android:id="@+id/spi_planname"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="2dp"
+                    android:layout_marginTop="2dp"
+                    android:minHeight="35dp"
+                    android:spinnerMode="dialog">
+                </Spinner>
+            </LinearLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/relative_good"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/relative"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="80dp"
+                android:background="@drawable/bg_round_frame"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_goodName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/search"
+                    android:drawablePadding="8dp"
+                    android:gravity="center_vertical"
+                    android:hint="商品名称"
+                    android:minHeight="30dp"
+                    android:paddingLeft="10dp"
+                    android:textColor="@color/vm_black_100"
+                    android:textSize="14sp"/>
+
+                <TextView
+                    android:id="@+id/tv_type"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="1"
+                    android:text="--"
+                    android:textColor="@color/word_black"
+                    android:textSize="14sp"/>
+            </LinearLayout>
+        </RelativeLayout>
+    </FrameLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recy_check"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/relative">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recy_check"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        </android.support.v7.widget.RecyclerView>
-    </android.support.v4.widget.SwipeRefreshLayout>
+        android:layout_below="@+id/frame"
+        android:layout_marginTop="5dp">
+    </android.support.v7.widget.RecyclerView>
 
     <TextView
         android:id="@+id/bt_submit"

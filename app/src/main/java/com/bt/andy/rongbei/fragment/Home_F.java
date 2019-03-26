@@ -183,7 +183,8 @@ public class Home_F extends Fragment implements View.OnClickListener {
     }
 
     private void searchDetailByGoods() {
-
+        //查询项目详情 orderId订单id，workProid工序id
+        new ProjectTask(orderId, workProid).execute();
     }
 
     private void initZYList() {
@@ -197,8 +198,8 @@ public class Home_F extends Fragment implements View.OnClickListener {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if (i == 0) {
-                    ToastUtils.showToast(getContext(), "请选择操作员");
                     workPerId = 0;
+                    ToastUtils.showToast(getContext(), "请选择操作员");
                 } else {
                     WorkPerInfo proceInfo = mListPer.get(i);
                     workPerId = proceInfo.getFitemid();//获得职员
@@ -223,6 +224,7 @@ public class Home_F extends Fragment implements View.OnClickListener {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if (i == 0) {
+                    workProid = "";
                     ToastUtils.showToast(getContext(), "请选择工序");
                 } else {
                     WorkProceInfo proceInfo = mListProce.get(i);
@@ -285,7 +287,7 @@ public class Home_F extends Fragment implements View.OnClickListener {
                     ToastUtils.showToast(getContext(), "请输入项目单号");//SEORD000005
                     return;
                 }
-                //查询项目详情
+                //查询项目详情 orderId订单id，workProid工序id
                 new ProjectTask(orderId, workProid).execute();
                 break;
             case R.id.bt_submit:
@@ -332,24 +334,6 @@ public class Home_F extends Fragment implements View.OnClickListener {
         new ProjectTask(orderId, workProid).execute();
         //查询项目商品列表
         new ProGoodsTask(orderId).execute();
-    }
-
-    private void searchFromData(String goodsid) {
-        int local = 0;
-        for (int i = 0; i < mRecData.size(); i++) {
-            String con = mRecData.get(i);
-            if (goodsid.equals(con)) {
-                local = i;
-            }
-        }
-        if (local == 0) {
-            ToastUtils.showToast(getContext(), "未在本项目中查找到该流转卡号");
-        } else {
-            local = local + 7;
-            mRecData.set(local, "请点击修改");
-            adapter.notifyDataSetChanged();
-            rec_detail.scrollToPosition(local + 7);
-        }
     }
 
     private void scanningCode(int kind) {
@@ -405,7 +389,7 @@ public class Home_F extends Fragment implements View.OnClickListener {
         if (which == 0) {//传入的是项目id
             searchForData(proID);
         } else {//查询的是流水卡号
-            searchFromData(proID);
+            //            searchFromData(proID);
         }
     }
 
@@ -503,10 +487,10 @@ public class Home_F extends Fragment implements View.OnClickListener {
                     WorkPerInfo info = gson.fromJson(jsonArray.get(i).toString(), WorkPerInfo.class);
                     mListPer.add(info);
                 }
-                workPerAdapter.notifyDataSetChanged();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+            workPerAdapter.notifyDataSetChanged();
         }
     }
 
@@ -523,6 +507,10 @@ public class Home_F extends Fragment implements View.OnClickListener {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            if ("".equals(workProid)) {
+                ToastUtils.showToast(getContext(), "请先选择工序");
+                return;
+            }
             ProgressDialogUtil.startShow(getContext(), "正在查询项目详情");
         }
 
@@ -658,10 +646,10 @@ public class Home_F extends Fragment implements View.OnClickListener {
                     ProGoodsInfo goodsInfo = gson.fromJson(jsonArray.get(i).toString(), ProGoodsInfo.class);
                     mListGoods.add(goodsInfo);
                 }
-                proGoodsAdapter.notifyDataSetChanged();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+            proGoodsAdapter.notifyDataSetChanged();
         }
     }
 
@@ -714,6 +702,24 @@ public class Home_F extends Fragment implements View.OnClickListener {
                 }
                 ToastUtils.showToast(getContext(), "提交失败,错误信息：" + message);
             }
+        }
+    }
+
+    private void searchFromData(String goodsid) {
+        int local = 0;
+        for (int i = 0; i < mRecData.size(); i++) {
+            String con = mRecData.get(i);
+            if (goodsid.equals(con)) {
+                local = i;
+            }
+        }
+        if (local == 0) {
+            ToastUtils.showToast(getContext(), "未在本项目中查找到该流转卡号");
+        } else {
+            local = local + 7;
+            mRecData.set(local, "请点击修改");
+            adapter.notifyDataSetChanged();
+            rec_detail.scrollToPosition(local + 7);
         }
     }
 }

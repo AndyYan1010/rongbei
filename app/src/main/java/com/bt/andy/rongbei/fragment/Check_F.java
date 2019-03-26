@@ -80,6 +80,7 @@ public class Check_F extends Fragment implements View.OnClickListener {
         et_orderid = mRootView.findViewById(R.id.et_orderid);//输入项目id
         img_scan0 = mRootView.findViewById(R.id.img_scan0);//扫描
         tv_sure0 = mRootView.findViewById(R.id.tv_sure0);//确认输入的项目id
+
         swipe = mRootView.findViewById(R.id.swipe);
         recy_check = mRootView.findViewById(R.id.recy_check);
     }
@@ -247,12 +248,13 @@ public class Check_F extends Fragment implements View.OnClickListener {
                 jsonArray = new JSONArray(s);
                 for (int i = 0; i < jsonArray.length(); i++) {
                     CheckInfo info = gson.fromJson(jsonArray.get(i).toString(), CheckInfo.class);
+                    info.setFHGQty(info.getFAuxQtyFinish());
                     mData.add(info);
                 }
-                checkAdapter.notifyDataSetChanged();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+            checkAdapter.notifyDataSetChanged();
         }
     }
 

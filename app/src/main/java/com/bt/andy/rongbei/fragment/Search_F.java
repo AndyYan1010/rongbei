@@ -204,11 +204,11 @@ public class Search_F extends Fragment implements View.OnClickListener {
                     SearchGXInfo info = gson.fromJson(jsonArray.get(i).toString(), SearchGXInfo.class);
                     mData.add(info);
                 }
-                searchAdapter.notifyDataSetChanged();
             } catch (JSONException e) {
                 e.printStackTrace();
                 ToastUtils.showToast(getContext(), "查找失败");
             }
+            searchAdapter.notifyDataSetChanged();
         }
     }
 }
