@@ -39,6 +39,7 @@ public class RecyCheckAdapter extends BaseQuickAdapter<CheckInfo, BaseViewHolder
         helper.setText(R.id.tv_fgx, item.getFGXName());
         helper.setText(R.id.tv_checkNum, "" + item.getFAuxQtyFinish());
         helper.setText(R.id.tv_fnumber, "" + item.getFHGQty());
+        helper.setText(R.id.et_note, item.getFnote());
         //添加子控件的点击事件
         helper.addOnClickListener(R.id.line_write).addOnClickListener(R.id.tv_sure);
 

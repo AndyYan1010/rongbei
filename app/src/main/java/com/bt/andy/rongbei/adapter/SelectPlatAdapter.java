@@ -50,7 +50,7 @@ public class SelectPlatAdapter extends BaseAdapter {
         MyViewHolder viewHolder;
         if (null == view) {
             viewHolder = new MyViewHolder();
-            view = View.inflate(mContext, R.layout.spinner_item_kind, null);
+            view = View.inflate(mContext, R.layout.spinner_item_plan, null);
             viewHolder.tv_kind = view.findViewById(R.id.tv_kind);
             view.setTag(viewHolder);
         } else {

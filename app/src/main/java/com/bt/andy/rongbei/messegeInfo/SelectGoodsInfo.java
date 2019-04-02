@@ -35,6 +35,11 @@ public class SelectGoodsInfo {
     private double FQty;
     private String fdate;
     private String F_106;
+    /**
+     * fdate1 : 2019-03-19
+     */
+
+    private String  fdate1;
 
     public boolean isIsChecked() {
         return isChecked;
@@ -107,5 +112,13 @@ public class SelectGoodsInfo {
 
     public void setF_106(String F_106) {
         this.F_106 = F_106;
+    }
+
+    public String getFdate1() {
+        return fdate1;
+    }
+
+    public void setFdate1(String fdate1) {
+        this.fdate1 = fdate1;
     }
 }

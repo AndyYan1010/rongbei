@@ -80,6 +80,8 @@ public class Plan_F extends Fragment implements View.OnClickListener {
     private ImageView             img_scan0;
     private TextView              tv_sure0;
     private RelativeLayout        relative_good;
+    private TextView              tv_takedate;
+    private TextView              tv_compldate;
     private RelativeLayout        relt_pors;
     private TextView              tv_type;
     private Spinner               spi_planname;
@@ -113,6 +115,8 @@ public class Plan_F extends Fragment implements View.OnClickListener {
         img_scan0 = mRootView.findViewById(R.id.img_scan0);//扫描
         tv_sure0 = mRootView.findViewById(R.id.tv_sure0);//确认输入的项目id
         relative_good = mRootView.findViewById(R.id.relative_good);
+        tv_takedate = mRootView.findViewById(R.id.tv_takedate);//接单日
+        tv_compldate = mRootView.findViewById(R.id.tv_compldate);//计划完成日
         tv_type = mRootView.findViewById(R.id.tv_type);//选择项目中的商品
         relt_pors = mRootView.findViewById(R.id.relt_pors);
         spi_planname = mRootView.findViewById(R.id.spi_planname);
@@ -202,6 +206,7 @@ public class Plan_F extends Fragment implements View.OnClickListener {
         }
     }
 
+    //查看界面//查询已排单
     private void searchPlatList() {
         if (null == orderID || "".equals(orderID)) {
             ToastUtils.showToast(getContext(), "项目单号不能为空");
@@ -213,6 +218,37 @@ public class Plan_F extends Fragment implements View.OnClickListener {
         new ItemPlatTask(sql).execute();
     }
 
+    //排单界面//查询商品
+    private void searchGoodsList() {
+        if (null == orderID || "".equals(orderID)) {
+            ToastUtils.showToast(getContext(), "项目单号不能为空");
+            return;
+        }
+        String sql = "select a.fdate, b.fid,b.FIndex,c.fnumber,c.fname,c.fmodel,FQty,convert(varchar(50),b.fdate3,23)fdate,F_106 " +
+                "from t_BOS200000000 a inner join xj b on a.fid=b.FID inner join  t_ICItem c on c.FItemID=b.FBase5  " +
+                "where isnull(b.fstatus,0)=0 and a.fnote='" + orderID + "' order by convert(varchar(50),b.fdate3,23)";
+        new ItemGoodsTask(sql).execute();//xinz a.fdate 接单日期 a.fdate,
+    }
+
+    //查看生产任务单列表
+    private void searchList(String innerID) {
+        if (null == innerID || "".equals(innerID)) {
+            ToastUtils.showToast(getContext(), "未查找到内码");
+            return;
+        }
+        String sql;
+        if ("排单".equals(String.valueOf(tv_kind.getText()))) {
+            sql = "select b.FName,c.FName,a.FID,a.FIndex,d.FNOTE,convert(varchar(50),FDate1,23)FDate1,convert(varchar(50),FDate2,23)FDate2 " +
+                    "from t_BOS200000000Entry2 a inner join t_BOS200000000 d on a.FID=d.FID left join  t_Item_3001 b on a.FBase4=b.FItemID " +
+                    "left join t_Emp c on c.FItemID=a.FBase1  where d.fid ='" + innerID + "' order by a.FID,a.FIndex";
+        } else {
+            sql = "select b.FName,c.FName,a.FID,a.FIndex,d.FNOTE,convert(varchar(50),FDate1,23)FDate1,convert(varchar(50),FDate2,23)FDate2 " +
+                    "from t_BOS200000000Entry2 a inner join t_BOS200000000 d on a.FID=d.FID left join  t_Item_3001 b on a.FBase4=b.FItemID " +
+                    "left join t_Emp c on c.FItemID=a.FBase1  where d.fid ='" + innerID + "' order by a.FID,a.FIndex";
+        }
+        new ItemListTask(sql).execute();//d.Fdate,d.Fdate,
+    }
+
     private void changePlanOrSearch() {
         //动画效果
         animatorXz = ObjectAnimator.ofFloat(img_xz, "rotation", 0f, 90f, 180f, 0f);
@@ -222,10 +258,15 @@ public class Plan_F extends Fragment implements View.OnClickListener {
             tv_kind.setText("查看");
             relative_good.setVisibility(View.GONE);
             relt_pors.setVisibility(View.VISIBLE);
+            if (null != mPlatList)
+                mPlatList.clear();
+            platAdapter.notifyDataSetChanged();
         } else {
             tv_kind.setText("排单");
             relative_good.setVisibility(View.VISIBLE);
             relt_pors.setVisibility(View.GONE);
+            tv_takedate.setText("--");
+            tv_compldate.setText("--");
         }
         mData.clear();
         planAdapter.notifyDataSetChanged();
@@ -301,14 +342,14 @@ public class Plan_F extends Fragment implements View.OnClickListener {
                                     } else {
                                         sql = sql + ",{\"FID\":" + mGoogsList.get(i).getFid() + ",\"FIndex\":" + mGoogsList.get(i).getFIndex() + "}";
                                     }
-                                    sql = sql + "]}";
                                     if ("".endsWith(fnumStr)) {
-                                        fnumStr = fnumStr + mGoogsList.get(i).getFnumber();
+                                        fnumStr = fnumStr + mGoogsList.get(i).getFname() + "  " + mGoogsList.get(i).getFmodel();
                                     } else {
-                                        fnumStr = fnumStr + "," + mGoogsList.get(i).getFnumber();
+                                        fnumStr = fnumStr + "," + mGoogsList.get(i).getFname() + "  " + mGoogsList.get(i).getFmodel();
                                     }
                                 }
                             }
+                            sql = sql + "]}";
                             //删除已勾选的条目
                             Iterator<SelectGoodsInfo> iterator = mGoogsList.iterator();
                             while (iterator.hasNext()) {
@@ -328,17 +369,6 @@ public class Plan_F extends Fragment implements View.OnClickListener {
                 });
             }
         });
-    }
-
-    private void searchGoodsList() {
-        if (null == orderID || "".equals(orderID)) {
-            ToastUtils.showToast(getContext(), "项目单号不能为空");
-            return;
-        }
-        String sql = "select b.fid,b.FIndex,c.fnumber,c.fname,c.fmodel,FQty,convert(varchar(50),b.fdate3,23)fdate,F_106 " +
-                "from t_BOS200000000 a inner join xj b on a.fid=b.FID inner join  t_ICItem c on c.FItemID=b.FBase5  " +
-                "where isnull(b.fstatus,0)=0 and a.fnote='" + orderID + "' order by convert(varchar(50),b.fdate3,23)";
-        new ItemGoodsTask(sql).execute();
     }
 
     private void searchInnerID(String sql, String fnumStr) {
@@ -440,25 +470,6 @@ public class Plan_F extends Fragment implements View.OnClickListener {
         dpk1.showSpecificTime(false); // 显示时和分
         dpk1.setIsLoop(true); // 允许循环滚动
         dpk1.show(mStartTime);
-    }
-
-    //查看生产任务单列表
-    private void searchList(String innerID) {
-        if (null == innerID || "".equals(innerID)) {
-            ToastUtils.showToast(getContext(), "未查找到内码");
-            return;
-        }
-        String sql;
-        if ("排单".equals(String.valueOf(tv_kind.getText()))) {
-            sql = "select b.FName,c.FName,a.FID,a.FIndex,d.FNOTE,convert(varchar(50),FDate1,23)FDate1,convert(varchar(50),FDate2,23)FDate2 " +
-                    "from t_BOS200000000Entry2 a inner join t_BOS200000000 d on a.FID=d.FID left join  t_Item_3001 b on a.FBase4=b.FItemID " +
-                    "left join t_Emp c on c.FItemID=a.FBase1  where d.fid ='" + innerID + "' order by a.FID,a.FIndex";
-        } else {
-            sql = "select b.FName,c.FName,a.FID,a.FIndex,d.FNOTE,convert(varchar(50),FDate1,23)FDate1,convert(varchar(50),FDate2,23)FDate2 " +
-                    "from t_BOS200000000Entry2 a inner join t_BOS200000000 d on a.FID=d.FID left join  t_Item_3001 b on a.FBase4=b.FItemID " +
-                    "left join t_Emp c on c.FItemID=a.FBase1  where d.fid ='" + innerID + "' order by a.FID,a.FIndex";
-        }
-        new ItemListTask(sql).execute();
     }
 
     //提交安排的时间
@@ -581,6 +592,11 @@ public class Plan_F extends Fragment implements View.OnClickListener {
                 for (int i = 0; i < jsonArray.length(); i++) {
                     SelectGoodsInfo selectGoodsInfo = gson.fromJson(jsonArray.get(i).toString(), SelectGoodsInfo.class);
                     mGoogsList.add(selectGoodsInfo);
+                }
+                //显示接单日期和计划交货日期
+                if (mGoogsList.size() > 0) {
+                    tv_takedate.setText(mGoogsList.get(0).getFdate().substring(0, 10));
+                    tv_compldate.setText(mGoogsList.get(0).getFdate1());
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
