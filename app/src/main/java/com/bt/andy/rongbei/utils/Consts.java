@@ -1,7 +1,8 @@
 package com.bt.andy.rongbei.utils;
 
 public class Consts {
-    public static String ENDPOINT                = "http://2o1b417794.51mypc.cn:9098/service1.asmx";
+//    public static String ENDPOINT                = "http://2o1b417794.51mypc.cn:9098/service1.asmx";
+    public static String ENDPOINT                = "http://2o1b417794.51mypc.cn:39437/Service1.asmx";
     //登录接口
     public static String Login                   = "ja_login";
     //查询工序接口
